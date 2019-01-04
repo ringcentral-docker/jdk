@@ -14,6 +14,7 @@ before_script:
 - cd jdk8
 - version="$(awk -F= '/JAVA_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
 - detail_version="${version}u$(awk -F= '/JAVA_UPDATE=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+- base_version="$(awk -F '[:]' '/FROM/ {print $2}' Dockerfile)"
 
 script:
 - docker build -t "$IMAGE_NAME" .
@@ -25,6 +26,7 @@ before_deploy:
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${detail_version}"
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${detail_version}-alpine"
+- docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${detail_version}-alpine-${base_version}"
 deploy:
   provider: script
   script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}" && docker push "${IMAGE_NAME}:${detail_version}" && docker push "${IMAGE_NAME}:${detail_version}-alpine"
