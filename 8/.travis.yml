@@ -1,0 +1,29 @@
+sudo: required
+services:
+- docker
+env:
+  global:
+  - IMAGE_NAME=ringcentral/jdk
+  - secure: "hvDnGKfQ8mxUTRK0XBfdqm7Wqjv558aXdgpSonRuCm2zlei3PEHKGvsbaK/kFnZiGoDXK6QFd38FrVHF/NQt0cY7UsG+5244JxHsiIFHYDuY+IouefwRjCnoRUC6eJ0tDQ1JcsMgMLAhLb2bkQC2FwCZwU8L5oe8RyeYcXSkL2doTM+GUHFHm5h1r7MMLfjofVSsbCKbgRD79aD6ZkaVgAI11JcL85R1e/XPfb7XZIe2suX0Y3QvvO51iZF5GT6JJCrtPeSGscuCdk5WnWNFWPGoSd/WXd+Wp8JfT0CDmlWzugaajErMDMOeu7sPLbaGtfawCl7r0MHnRXDkkzlyQQNEt8Kdk5Ehe/il4CB7xz2iPnNXCFSGrwXBA3IIlhMsfpXJmBde3GYoFZqtA7rVhnxHpz5vWuOWCqJVW5zwgkgfO8Jfi9+3Zp2skytXKFse2gmC3vj3uJ+to9M8fToMjxZhWGTjdHZVfr4ijMntnhBUS/2IjM7+cuqCAXZNPaQx6VGZcydyKe1AwsNVe7juqA+1CRKZIL85VWmNrMRm7VSJ3YBrAwa+x/AmFuUjARt7NrL26qRkcRtLj12QU3MRLtPaRhCYWMAqSiG7s5RZxRiaAjbiPVq58vL+rlnh49nTNgPPdcBVSNOgG39DzAE9V2iaEvk26SzIIhAVo7BSsF8=" # DOCKER_USERNAME
+  - secure: "Q8m1xodJwTCdnvGYVVyiRyB9SRzLzBZqVgT+sSi2ZuAIM3FuPtQLnm8R3af8IDqhbXGraKE4qX5zjEdT1RbeA+w/iw0z2V6TSl+Vaf4GhY464VtACLI5pkO6TNkcg9aBQSmwuVx4llIpDIrmNlxHyHsQUNyFeYMqRL3joiD0DRtekTv/qKY5GyR8Gat2sUrYFuEJHMInKZnNHp1vILUXHVcVuTIYVc3CAnBfTpJftxES5IfzT40CR4P1Tfa0FSP+GDkr0LaDcrCskrOn2QX1jIT+Ki7hvS8kSKC5/HjuwQWcnQRMRJ6vkPjyroCAjNHgNirD1D5QcHFq+5kJvuDgJvqgqfxFOcID5A76cYPPkg2Dxe3Jo28R5KWS0Opw/hZtZNjy4SxiLVm9uEu/BFepseWBf6Rgzt7D/iX/zkQ5z4vmKmaE05Eyrm4yAzhHZoGGv5NpqaH3jllXQ4HvxYBcbEllBZp5d8U/WQ4dGiyH/3wueXWDfGss0j60ZCtcZTD7skHwnCiofyDTqvVGZopnv6BMrrN590gi/bs6OlYNDVeWUrqVvwzd0+GVocMUQrsMt+z6SpF0lbIuf03udwPEPjQq5ubCirftiMWd03EzY1bp04/lJBq35/HmMk/wd0HsnzOSuBQCzGgccm99LJ1PgBIen0GdkY5cE41g2aLvgGk=" # DOCKER_EMAIL
+  - secure: "Ak8jnvI3D6+S4BTaOhXiT2eY3FyrPXi2jDUjO5vB0RYQAYunJfoLP5FoAwWGl5c6QtM42YhnB6ZqSMwehAInGGDkXU1cPs/IFGiSuMCgNRZiJtYNbHdy0kKRgo0aO8GtMlMbcP/wy0naKD0xIoF45pKaZQRbkjuAx7WQaHf/tlOTqbGhV7PhbknXUU6L/ZTR2s00aBJU668bimFbM6sbfa9hcic3dP9cSlwxS93zSE9rgBr7ItfNUWfTqPfZUhmmkxNv4iwFCvKWShFGnhTAYUodUzYDuU5FyNaPRUIIfJOLNHy5xZYUpKCV/gLXbR+SwxWnjIornNa7KXXoUJY1XNDdBKBLyqvPpb7/HMPG+X62nN3eqEqAh9nS3yGFmg+DkZ4iWCv4iItRTrdJb6gM26zO5z6yhMqRvEfac8GXzR/uY7VCBS538ZYzEMd9o2HI7cufxmzSUBZKueBb3+NjoAJnAinGzDcZvo5m7vKtvkH2CtBub55js0TVJBQbgzQxrox0mByA9J9zdoocZAqnKa5vo6GOqKLvalf78HpBZwX+H5GpgSNpb0wuddpDyuv74ecQbamKuKDsVx/0h4qHV6ioJZZj0ridUp/ngvtgUVQSmM2jxyRyIjt+46IpuZbxNsGYVwBIyKbvndnw0pTZcHMxDVJV8N29yT0PpoTRmb8=" # DOCKER_PASSWORD
+
+  before_script:
+  - version="$(awk -F= '/JAVA_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+  - detail_version="${version}u$(awk -F= '/JAVA_UPDATE=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+
+  script:
+  - docker build -t ringcentral/jdk .
+  after_script:
+  - docker images
+  before_deploy:
+  - docker login -e "$DOCKER_EMAIL" -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
+  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
+  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${detail_version}"
+  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${detail_version}-alpine"
+  deploy:
+    provider: script
+    script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version} && docker push "${IMAGE_NAME}:${detail_version} && docker push "${detail_version}-alpine"
+    on:
+      branch: master
