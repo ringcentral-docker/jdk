@@ -11,12 +11,12 @@ env:
   - secure: "Ak8jnvI3D6+S4BTaOhXiT2eY3FyrPXi2jDUjO5vB0RYQAYunJfoLP5FoAwWGl5c6QtM42YhnB6ZqSMwehAInGGDkXU1cPs/IFGiSuMCgNRZiJtYNbHdy0kKRgo0aO8GtMlMbcP/wy0naKD0xIoF45pKaZQRbkjuAx7WQaHf/tlOTqbGhV7PhbknXUU6L/ZTR2s00aBJU668bimFbM6sbfa9hcic3dP9cSlwxS93zSE9rgBr7ItfNUWfTqPfZUhmmkxNv4iwFCvKWShFGnhTAYUodUzYDuU5FyNaPRUIIfJOLNHy5xZYUpKCV/gLXbR+SwxWnjIornNa7KXXoUJY1XNDdBKBLyqvPpb7/HMPG+X62nN3eqEqAh9nS3yGFmg+DkZ4iWCv4iItRTrdJb6gM26zO5z6yhMqRvEfac8GXzR/uY7VCBS538ZYzEMd9o2HI7cufxmzSUBZKueBb3+NjoAJnAinGzDcZvo5m7vKtvkH2CtBub55js0TVJBQbgzQxrox0mByA9J9zdoocZAqnKa5vo6GOqKLvalf78HpBZwX+H5GpgSNpb0wuddpDyuv74ecQbamKuKDsVx/0h4qHV6ioJZZj0ridUp/ngvtgUVQSmM2jxyRyIjt+46IpuZbxNsGYVwBIyKbvndnw0pTZcHMxDVJV8N29yT0PpoTRmb8=" # DOCKER_PASSWORD
 
 before_script:
-- cd 8
+- cd jdk8
 - version="$(awk -F= '/JAVA_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
 - detail_version="${version}u$(awk -F= '/JAVA_UPDATE=/ {print $2}' Dockerfile | cut -d " " -f 1)"
 
 script:
-- docker build -t ringcentral/jdk .
+- docker build -t "$IMAGE_NAME" .
 after_script:
 - docker images
 before_deploy:
