@@ -27,6 +27,6 @@ before_deploy:
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${detail_version}-alpine"
 deploy:
   provider: script
-  script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version} && docker push "${IMAGE_NAME}:${detail_version} && docker push "${detail_version}-alpine"
+  script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}" && docker push "${IMAGE_NAME}:${detail_version}" && docker push "${detail_version}-alpine"
   on:
     branch: master
