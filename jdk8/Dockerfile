@@ -5,8 +5,8 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     JAVA_VERSION=8 \
-    JAVA_UPDATE=191 \
-    JAVA_HASH=2787e4a523244c269598db4e85c51e0c \
+    JAVA_UPDATE=202 \
+    JAVA_HASH=1961070e4c9b4e26a04e7f5a083f551e \
     JAVA_BASE_URL=https://download.oracle.com/otn-pub/java \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
     GLIBC_PACKAGE_VERSION=2.28-r0 \
@@ -21,7 +21,7 @@ ENV LANG=en_US.UTF-8 \
 #RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
 RUN apk update \
-    && apk add --no-cache ca-certificates bash
+    && apk add --no-cache ca-certificates bash git openssh
 
 #====================
 # Install GNU Libc
