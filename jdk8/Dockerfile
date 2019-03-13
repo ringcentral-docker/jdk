@@ -6,6 +6,7 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     JAVA_VERSION=8 \
     JAVA_UPDATE=202 \
+    JAVA_UPDATE_SMALL_VERSION=08 \
     JAVA_HASH=1961070e4c9b4e26a04e7f5a083f551e \
     JAVA_BASE_URL=https://download.oracle.com/otn-pub/java \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
@@ -52,7 +53,7 @@ RUN apk add --no-cache --virtual=build-dependencies wget \
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
     && mkdir -p /opt/java \
     && cd /tmp \
-    && wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie;" "${JAVA_BASE_URL}/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b12/${JAVA_HASH}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" \
+    && wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie;" "${JAVA_BASE_URL}/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_UPDATE_SMALL_VERSION}/${JAVA_HASH}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" \
     && tar -xzf "jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
     && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
     && rm -rf "${JAVA_HOME}/"*src.zip \
