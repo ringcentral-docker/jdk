@@ -53,7 +53,7 @@ RUN apk add --no-cache --virtual=build-dependencies wget \
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
     && mkdir -p /opt/java \
     && cd /tmp \
-    && curl -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "${JAVA_BASE_URL}/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_UPDATE_SMALL_VERSION}/${JAVA_HASH}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" \
+    && wget --continue --no-check-certificate --header "Cookie: oraclelicense=a" "${JAVA_BASE_URL}/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_UPDATE_SMALL_VERSION}/${JAVA_HASH}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" \
     && tar -xzf "jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
     && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
     && rm -rf "${JAVA_HOME}/"*src.zip \
