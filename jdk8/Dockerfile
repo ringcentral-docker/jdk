@@ -5,10 +5,10 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     JAVA_VERSION=8 \
-    JAVA_UPDATE=212 \
-    JAVA_UPDATE_SMALL_VERSION=10 \
-    JAVA_HASH=59066701cf1a433da9770636fbc4c9aa \
+    JAVA_UPDATE=202 \
+    JAVA_UPDATE_SMALL_VERSION=08 \
     JAVA_BASE_URL=https://download.oracle.com/otn-pub/java \
+    JAVA_BASE_MIRRORS_URL=https://repo.huaweicloud.com/java \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
     GLIBC_PACKAGE_VERSION=2.28-r0 \
     JAVA_HOME=/opt/java \
@@ -53,7 +53,7 @@ RUN apk add --no-cache --virtual=build-dependencies wget \
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
     && mkdir -p /opt/java \
     && cd /tmp \
-    && wget --continue --no-check-certificate --header "Cookie: oraclelicense=a" "${JAVA_BASE_URL}/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_UPDATE_SMALL_VERSION}/${JAVA_HASH}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" \
+    && wget --no-check-certificate "${JAVA_BASE_MIRRORS_URL}/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_UPDATE_SMALL_VERSION}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" \
     && tar -xzf "jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
     && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
     && rm -rf "${JAVA_HOME}/"*src.zip \
