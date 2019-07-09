@@ -22,7 +22,7 @@ ENV LANG=en_US.UTF-8 \
 #RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
 RUN apk update \
-    && apk add --no-cache ca-certificates bash git openssh zip subversion sshpass
+    && apk add --no-cache ca-certificates bash git openssh zip subversion sshpass curl
 
 #====================
 # Install GNU Libc
