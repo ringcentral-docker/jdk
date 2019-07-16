@@ -21,7 +21,7 @@ script:
 after_script:
 - docker images
 before_deploy:
-- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+- echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${detail_version}"
