@@ -1,0 +1,38 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      # '*' matches any character except '/'
+      - 'jdk8/*'
+      - '.github/workflows/*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Docker login
+      env:
+        USER_NAME: ${{ secrets.USER_NAME }}  
+        PASSWORD: ${{ secrets.PASSWORD }}
+      run: |
+        echo $PASSWORD | docker login --username $USER_NAME --password-stdin
+
+    - name: Build & Push Docker Image
+      run: |
+        cd jdk8
+        IMAGE_NAME=ringcentral/jdk
+        VERSION="$(awk -F= '/JAVA_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+        DETAIL_VERSION="${version}u$(awk -F= '/JAVA_UPDATE=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+        BASE_VERSION="alpine$(awk -F '[:]' '/FROM/ {print $2}' Dockerfile)"
+        docker build --tag ${IMAGE_NAME} --file Dockerfile .
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_VERSION}"
+        docker push "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_VERSION}"
+        docker push "${IMAGE_NAME}:${DETAIL_VERSION}"
+        docker push "${IMAGE_NAME}:${VERSION}"
+        docker push "${IMAGE_NAME}:latest"
