@@ -25,7 +25,7 @@ jobs:
         cd jdk8
         IMAGE_NAME=ringcentral/jdk
         VERSION="$(awk -F= '/JAVA_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
-        DETAIL_VERSION="${version}u$(awk -F= '/JAVA_UPDATE=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+        DETAIL_VERSION="${VERSION}u$(awk -F= '/JAVA_UPDATE=/ {print $2}' Dockerfile | cut -d " " -f 1)"
         BASE_VERSION="alpine$(awk -F '[:]' '/FROM/ {print $2}' Dockerfile)"
         docker build --tag ${IMAGE_NAME} --file Dockerfile .
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
