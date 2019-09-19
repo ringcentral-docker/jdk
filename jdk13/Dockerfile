@@ -20,25 +20,6 @@ ENV LANG=en_US.UTF-8 \
 RUN apk update \
     && apk add --no-cache ca-certificates bash git openssh openssl zip subversion sshpass curl
 
-#==============
-# Install gcc-libs & zlib
-# refer https://github.com/io-sgr/docker-java-oracle/blob/master/alpine/jdk/Dockerfile
-#==============
-
-RUN apk add --no-cache --virtual=build-dependencies binutils xz \
-    && cd /tmp \
-    && mkdir /tmp/gcc-libs \
-    && wget "${ARCHLINUX_BASE_URL}/g/gcc-libs/gcc-libs-${GCC_LIBS_VERSION}-x86_64.pkg.tar.xz" -O gcc-libs.pkg.tar.xz \
-    && tar -xvJf gcc-libs.pkg.tar.xz -C /tmp/gcc-libs \
-    && mv /tmp/gcc-libs/usr/lib/libgcc* /tmp/gcc-libs/usr/lib/libstdc++* /usr/glibc-compat/lib \
-    && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
-    && mkdir /tmp/zlib \
-    && wget "${ARCHLINUX_BASE_URL}/z/zlib/zlib-1%3A${ZLIB_VERSION}-x86_64.pkg.tar.xz" -O zlib.pkg.tar.xz\
-    && tar -xvJf zlib.pkg.tar.xz -C /tmp/zlib \
-    && mv /tmp/zlib/usr/lib/libz.so* /usr/glibc-compat/lib \
-    && apk del build-dependencies \
-    && rm -rf /tmp/*
-
 #====================
 # Install GNU Libc
 #====================
@@ -60,6 +41,25 @@ RUN apk add --no-cache --virtual=build-dependencies wget \
     && /usr/glibc-compat/bin/localedef -i en_US -f UTF-8 en_US.UTF-8 \
     && apk del build-dependencies \
     && rm -rf /etc/apk/keys/sgerrand.rsa.pub \
+    && rm -rf /tmp/*
+
+#==============
+# Install gcc-libs & zlib
+# refer https://github.com/io-sgr/docker-java-oracle/blob/master/alpine/jdk/Dockerfile
+#==============
+
+RUN apk add --no-cache --virtual=build-dependencies binutils xz \
+    && cd /tmp \
+    && mkdir /tmp/gcc-libs \
+    && wget "${ARCHLINUX_BASE_URL}/g/gcc-libs/gcc-libs-${GCC_LIBS_VERSION}-x86_64.pkg.tar.xz" -O gcc-libs.pkg.tar.xz \
+    && tar xvJf gcc-libs.pkg.tar.xz -C /tmp/gcc-libs \
+    && mv /tmp/gcc-libs/usr/lib/libgcc* /tmp/gcc-libs/usr/lib/libstdc++* /usr/glibc-compat/lib \
+    && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
+    && mkdir /tmp/zlib \
+    && wget "${ARCHLINUX_BASE_URL}/z/zlib/zlib-1%3A${ZLIB_VERSION}-x86_64.pkg.tar.xz" -O zlib.pkg.tar.xz\
+    && tar xvJf zlib.pkg.tar.xz -C /tmp/zlib \
+    && mv /tmp/zlib/usr/lib/libz.so* /usr/glibc-compat/lib \
+    && apk del build-dependencies \
     && rm -rf /tmp/*
 
 #==============
