@@ -1,16 +1,16 @@
-FROM alpine:3.8
+FROM alpine:3.10
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     JAVA_VERSION=8 \
-    JAVA_UPDATE=202 \
-    JAVA_UPDATE_SMALL_VERSION=08 \
+    JAVA_UPDATE=221 \
+    JAVA_UPDATE_SMALL_VERSION=11 \
     JAVA_BASE_URL=https://download.oracle.com/otn-pub/java \
     JAVA_BASE_MIRRORS_URL=https://repo.huaweicloud.com/java \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
-    GLIBC_PACKAGE_VERSION=2.28-r0 \
+    GLIBC_PACKAGE_VERSION=2.30-r0 \
     JAVA_HOME=/opt/java \
     PATH=$PATH:${JAVA_HOME}/bin \
     USER_HOME_DIR="/root"
