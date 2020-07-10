@@ -53,7 +53,7 @@ RUN apk add --no-cache --virtual=build-dependencies wget \
 RUN apk add --no-cache --virtual=build-dependencies binutils xz zstd \
     && cd /tmp \
     && mkdir /tmp/gcc \
-    && wget "${ARCHLINUX_BASE_URL}/g/gcc-libs/gcc-libs-${GCC_LIBS_VERSION}-x86_64.pkg.tar.zst" -O gcc-libs.pkg.tar.zst \
+    && wget "${ARCHLINUX_BASE_URL}/g/gcc-libs/gcc-libs-${GCC_LIBS_VERSION}-x86_64.pkg.tar.zst" -O gcc-libs.tar.zst \
     && zstd -d /tmp/gcc-libs.tar.zst --output-dir-flat /tmp \
     && tar -xf /tmp/gcc-libs.tar -C /tmp/gcc \
     && mv /tmp/gcc/usr/lib/libgcc* /tmp/gcc/usr/lib/libstdc++* /usr/glibc-compat/lib \
