@@ -69,7 +69,7 @@ RUN apk add --no-cache --virtual=build-dependencies binutils xz zstd \
 # Install Oracle JDK
 #==============
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
-    && mkdir -p ${JAVA_HOME} \
+    && mkdir -p /opt/java \
     && cd /tmp \
     && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
     && echo "${JAVA_SHA256SUM} OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" | sha256sum -c -; \
