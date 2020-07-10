@@ -30,9 +30,11 @@ jobs:
         docker build --tag ${IMAGE_NAME} --file Dockerfile .
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_VERSION}"
         docker push "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_VERSION}"
         docker push "${IMAGE_NAME}:${DETAIL_VERSION}"
+        docker push "${IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
         docker push "${IMAGE_NAME}:${VERSION}"
         docker push "${IMAGE_NAME}:latest"

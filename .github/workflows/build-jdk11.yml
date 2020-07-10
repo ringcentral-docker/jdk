@@ -1,4 +1,4 @@
-name: Build JDK 13
+name: Build AdoptOpenJDK 11
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
     paths:
       # '*' matches any character except '/'
-      - 'jdk13/*'
+      - 'jdk11/*'
       - '.github/workflows/*'
 jobs:
   build:
@@ -22,13 +22,19 @@ jobs:
 
     - name: Build & Push Docker Image
       run: |
-        cd jdk13
+        cd jdk11
         IMAGE_NAME=ringcentral/jdk
         VERSION="$(awk -F= '/JAVA_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+        DETAIL_VERSION="$(awk -F= '/JAVA_DETAIL_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
         BASE_VERSION="alpine$(awk -F '[:]' '/FROM/ {print $2}' Dockerfile)"
         docker build --tag ${IMAGE_NAME} --file Dockerfile .
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_VERSION}"
+        docker push "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_VERSION}"
+        docker push "${IMAGE_NAME}:${DETAIL_VERSION}"
         docker push "${IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
         docker push "${IMAGE_NAME}:${VERSION}"
+        docker push "${IMAGE_NAME}:latest"

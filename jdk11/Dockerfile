@@ -1,20 +1,22 @@
-FROM alpine:3.10
+FROM alpine:3.12
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
-    JAVA_VERSION=13 \
-    JAVA_UPDATE=33 \
-    GCC_LIBS_VERSION=9.1.0-2 \
+    JAVA_VERSION=11 \
+    JAVA_DETAIL_VERSION=11.0.7 \
+    JAVA_UPDATE_SMALL_VERSION=10 \
+    JAVA_SHA256SUM=ee60304d782c9d5654bf1a6b3f38c683921c1711045e1db94525a51b7024a2ca \
+    JAVA_BASE_URL=https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download \
+    GCC_LIBS_VERSION=10.1.0-2 \
     ZLIB_VERSION=1.2.11-3 \
-    JAVA_BASE_URL=https://download.oracle.com/otn-pub/java \
-    JAVA_BASE_MIRRORS_URL=https://repo.huaweicloud.com/java \
     ARCHLINUX_BASE_URL=https://archive.archlinux.org/packages \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
     GLIBC_PACKAGE_VERSION=2.30-r0 \
     JAVA_HOME=/opt/java \
     PATH=$PATH:${JAVA_HOME}/bin \
+    JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle" \
     USER_HOME_DIR="/root"
 
 RUN apk update \
@@ -45,7 +47,7 @@ RUN apk add --no-cache --virtual=build-dependencies wget \
 
 #==============
 # Install gcc-libs & zlib
-# refer https://github.com/io-sgr/docker-java-oracle/blob/master/alpine/jdk/Dockerfile
+# refer https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/11/jdk/alpine/Dockerfile.openj9.releases.full
 #==============
 
 RUN apk add --no-cache --virtual=build-dependencies binutils xz \
@@ -66,10 +68,11 @@ RUN apk add --no-cache --virtual=build-dependencies binutils xz \
 # Install Oracle JDK
 #==============
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
-    && mkdir -p /opt/java \
+    && mkdir -p ${JAVA_HOME} \
     && cd /tmp \
-    && wget --no-check-certificate "${JAVA_BASE_MIRRORS_URL}/jdk/${JAVA_VERSION}+${JAVA_UPDATE}/jdk-${JAVA_VERSION}_linux-x64_bin.tar.gz" \
-    && tar -xzf "jdk-${JAVA_VERSION}_linux-x64_bin.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
+    && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
+    echo "${JAVA_SHA256SUM} OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" | sha256sum -c -; \
+    && tar -xzf "OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
     && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
     && apk del build-dependencies \
     && rm -rf /tmp/*
