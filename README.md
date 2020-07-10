@@ -9,11 +9,30 @@
 
 * Base on the latest version of official alpine Docker Image : [link](https://hub.docker.com/_/alpine/)
 
+Oracle JDK 8
 ```bash
-java version "1.8.0_191"
-Java(TM) SE Runtime Environment (build 1.8.0_191-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.191-b12, mixed mode)
-javac 1.8.0_191
+docker pull ringcentral/jdk:8u202
+```
+
+```bash
+java version "1.8.0_202"
+Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
+Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
+javac 1.8.0_202
+```
+
+AdoptOpenJDK 11
+```bash
+docker pull ringcentral/maven:3.6.3-jdk11.0.7
+```
+
+```bash
+Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
+openjdk version "11.0.7" 2020-04-14
+OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.7+10)
+OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.7+10, mixed mode)
+Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
+javac 11.0.7
 ```
 
 ## How to use this image
@@ -42,4 +61,7 @@ docker pull ringcentral/jdk:latest
 ```
 
 for more detail information please refer this url:
+
 <https://github.com/ringcentral-docker/jdk>
+
+<https://hub.docker.com/r/ringcentral/maven>
