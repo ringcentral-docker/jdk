@@ -71,12 +71,12 @@ RUN apk add --no-cache --virtual=build-dependencies binutils xz zstd \
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
     && mkdir -p ${JAVA_HOME} \
     && cd /tmp
-    # && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
+    && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
     # && echo "${JAVA_SHA256SUM} OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" | sha256sum -c -; \
-    # && tar -xzf "OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
-    # && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
-    # && apk del build-dependencies \
-    # && rm -rf /tmp/*
+    && tar -xzf "OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
+    && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
+    && apk del build-dependencies \
+    && rm -rf /tmp/*
 
 #==============
 # Show version
