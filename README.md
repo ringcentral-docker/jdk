@@ -70,4 +70,4 @@ for more detail information please refer this url:
 
 <https://github.com/ringcentral-docker/jdk>
 
-<https://hub.docker.com/r/ringcentral/maven>
+<https://hub.docker.com/r/ringcentral/jdk>
