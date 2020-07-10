@@ -50,12 +50,13 @@ RUN apk add --no-cache --virtual=build-dependencies wget \
 # refer https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/11/jdk/alpine/Dockerfile.openj9.releases.full
 #==============
 
-RUN apk add --no-cache --virtual=build-dependencies binutils xz \
+RUN apk add --no-cache --virtual=build-dependencies binutils xz zstd \
     && cd /tmp \
-    && mkdir /tmp/gcc-libs \
-    && wget "${ARCHLINUX_BASE_URL}/g/gcc-libs/gcc-libs-${GCC_LIBS_VERSION}-x86_64.pkg.tar.xz" -O gcc-libs.pkg.tar.xz \
-    && tar xvJf gcc-libs.pkg.tar.xz -C /tmp/gcc-libs \
-    && mv /tmp/gcc-libs/usr/lib/libgcc* /tmp/gcc-libs/usr/lib/libstdc++* /usr/glibc-compat/lib \
+    && mkdir /tmp/gcc \
+    && wget "${ARCHLINUX_BASE_URL}/g/gcc-libs/gcc-libs-${GCC_LIBS_VERSION}-x86_64.pkg.tar.zst" -O gcc-libs.pkg.tar.zst \
+    && zstd -d /tmp/gcc-libs.tar.zst --output-dir-flat /tmp \
+    && tar -xf /tmp/gcc-libs.tar -C /tmp/gcc \
+    && mv /tmp/gcc/usr/lib/libgcc* /tmp/gcc/usr/lib/libstdc++* /usr/glibc-compat/lib \
     && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
     && mkdir /tmp/zlib \
     && wget "${ARCHLINUX_BASE_URL}/z/zlib/zlib-1%3A${ZLIB_VERSION}-x86_64.pkg.tar.xz" -O zlib.pkg.tar.xz\
