@@ -7,7 +7,6 @@ ENV LANG=en_US.UTF-8 \
     JAVA_VERSION=11 \
     JAVA_DETAIL_VERSION=11.0.7 \
     JAVA_UPDATE_SMALL_VERSION=10 \
-    JAVA_SHA256SUM=ee60304d782c9d5654bf1a6b3f38c683921c1711045e1db94525a51b7024a2ca \
     JAVA_BASE_URL=https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download \
     GCC_LIBS_VERSION=10.1.0-2 \
     ZLIB_VERSION=1.2.11-3 \
@@ -66,13 +65,12 @@ RUN apk add --no-cache --virtual=build-dependencies binutils xz zstd \
     && rm -rf /tmp/*
 
 #==============
-# Install Oracle JDK
+# Install AdoptOpenJDK
 #==============
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
     && mkdir -p ${JAVA_HOME} \
     && cd /tmp \
     && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
-    && echo "${JAVA_SHA256SUM} OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" | sha256sum -c - \
     && tar -xzf "OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
     && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
     && apk del build-dependencies \
