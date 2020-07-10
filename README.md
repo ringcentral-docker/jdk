@@ -3,7 +3,13 @@
 
 ## Build Status
 
-[![Build Status](https://travis-ci.org/ringcentral-docker/jdk.svg?branch=master)](https://travis-ci.org/ringcentral-docker/jdk)
+Oracle JDK 8
+
+![Build JDK 8](https://github.com/ringcentral-docker/jdk/workflows/Build%20JDK%208/badge.svg)
+
+AdoptOpenJDK 11
+
+![Build AdoptOpenJDK 11](https://github.com/ringcentral-docker/jdk/workflows/Build%20AdoptOpenJDK%2011/badge.svg)
 
 ## Image description
 
