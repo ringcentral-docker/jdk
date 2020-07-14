@@ -30,14 +30,13 @@ jobs:
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
 
         VERSION="$(awk -F= '/JAVA_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
-        DETAIL_VERSION="${VERSION}u$(awk -F= '/JAVA_UPDATE=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+        DETAIL_VERSION="$(awk -F= '/JAVA_DETAIL_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
         BASE_VERSION="alpine$(awk -F '[:]' '/FROM/ {print $2}' Dockerfile)"
 
         docker build --tag ${IMAGE_NAME} --file Dockerfile .
 
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
-        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_VERSION}"
         
         docker push "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_VERSION}"
