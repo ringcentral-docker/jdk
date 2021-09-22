@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.14
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV LANG=en_US.UTF-8 \
@@ -9,11 +9,11 @@ ENV LANG=en_US.UTF-8 \
     JAVA_UPDATE_MIDDLE_VERSION=9 \
     JAVA_UPDATE_SMALL_VERSION=0.26.0 \
     JAVA_BASE_URL=https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download \
-    GCC_LIBS_VERSION=11.1.0-1 \
-    ZLIB_VERSION=1.2.11-4 \
+    GCC_LIBS_VERSION=10.1.0-2 \
+    ZLIB_VERSION=1.2.11-3 \
     ARCHLINUX_BASE_URL=https://archive.archlinux.org/packages \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
-    GLIBC_PACKAGE_VERSION=2.34-r0 \
+    GLIBC_PACKAGE_VERSION=2.30-r0 \
     JAVA_HOME=/opt/java \
     PATH=$PATH:${JAVA_HOME}/bin \
     JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle" \
