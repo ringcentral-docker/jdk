@@ -1,18 +1,19 @@
-FROM alpine:3.12
+FROM alpine:3.14
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     JAVA_VERSION=11 \
-    JAVA_DETAIL_VERSION=11.0.7 \
-    JAVA_UPDATE_SMALL_VERSION=10 \
+    JAVA_DETAIL_VERSION=11.0.11 \
+    JAVA_UPDATE_MIDDLE_VERSION=9 \
+    JAVA_UPDATE_SMALL_VERSION=0.26.0 \
     JAVA_BASE_URL=https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download \
-    GCC_LIBS_VERSION=10.1.0-2 \
-    ZLIB_VERSION=1.2.11-3 \
+    GCC_LIBS_VERSION=11.1.0-1 \
+    ZLIB_VERSION=1.2.11-4 \
     ARCHLINUX_BASE_URL=https://archive.archlinux.org/packages \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
-    GLIBC_PACKAGE_VERSION=2.30-r0 \
+    GLIBC_PACKAGE_VERSION=2.34-r0 \
     JAVA_HOME=/opt/java \
     PATH=$PATH:${JAVA_HOME}/bin \
     JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle" \
@@ -70,8 +71,8 @@ RUN apk add --no-cache --virtual=build-dependencies binutils xz zstd \
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
     && mkdir -p ${JAVA_HOME} \
     && cd /tmp \
-    && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
-    && tar -xzf "OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
+    && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_MIDDLE_VERSION}_openj9-${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}U-jdk_x64_linux_openj9_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_MIDDLE_VERSION}_openj9-${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
+    && tar -xzf "OpenJDK${JAVA_VERSION}U-jdk_x64_linux_openj9_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_MIDDLE_VERSION}_openj9-${JAVA_UPDATE_SMALL_VERSION}.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
     && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
     && apk del build-dependencies \
     && rm -rf /tmp/*
