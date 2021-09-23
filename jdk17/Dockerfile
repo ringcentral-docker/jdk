@@ -5,9 +5,9 @@ ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     JAVA_VERSION=11 \
-    JAVA_DETAIL_VERSION=11.0.12 \
-    JAVA_UPDATE_SMALL_VERSION=7 \
-    JAVA_BASE_URL=https://github.com/adoptium/temurin11-binaries/releases/download \
+    JAVA_DETAIL_VERSION=17 \
+    JAVA_UPDATE_SMALL_VERSION=35 \
+    JAVA_BASE_URL=https://github.com/adoptium/temurin17-binaries/releases/download \
     GCC_LIBS_VERSION=10.1.0-2 \
     ZLIB_VERSION=1.2.11-3 \
     ARCHLINUX_BASE_URL=https://archive.archlinux.org/packages \
@@ -70,8 +70,8 @@ RUN apk add --no-cache --virtual=build-dependencies binutils xz zstd \
 RUN apk add --no-cache --virtual=build-dependencies wget unzip \
     && mkdir -p ${JAVA_HOME} \
     && cd /tmp \
-    && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
-    && tar -xzf "OpenJDK${JAVA_VERSION}U-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
+    && wget --no-check-certificate "${JAVA_BASE_URL}/jdk-${JAVA_DETAIL_VERSION}%2B${JAVA_UPDATE_SMALL_VERSION}/OpenJDK${JAVA_VERSION}-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" \
+    && tar -xzf "OpenJDK${JAVA_VERSION}-jdk_x64_linux_hotspot_${JAVA_DETAIL_VERSION}_${JAVA_UPDATE_SMALL_VERSION}.tar.gz" -C "${JAVA_HOME}" --strip-components=1 \
     && ln -s ${JAVA_HOME}/bin/* /usr/bin/ \
     && apk del build-dependencies \
     && rm -rf /tmp/*
