@@ -5,20 +5,21 @@
 
 Oracle JDK 8
 
-![Build JDK 8](https://github.com/ringcentral-docker/jdk/workflows/Build%20JDK%208/badge.svg)
+[![Build JDK 8](https://github.com/ringcentral-docker/jdk/actions/workflows/build-jdk8.yml/badge.svg)](https://github.com/ringcentral-docker/jdk/actions/workflows/build-jdk8.yml)
 
 AdoptOpenJDK 11
 
-![Build AdoptOpenJDK 11](https://github.com/ringcentral-docker/jdk/workflows/Build%20AdoptOpenJDK%2011/badge.svg)
+[![Build AdoptOpenJDK 11](https://github.com/ringcentral-docker/jdk/actions/workflows/build-jdk11.yml/badge.svg)](https://github.com/ringcentral-docker/jdk/actions/workflows/build-jdk11.yml)
 
+
+AdoptOpenJDK 17
+
+[![Build AdoptOpenJDK 17](https://github.com/ringcentral-docker/jdk/actions/workflows/build-jdk17.yml/badge.svg)](https://github.com/ringcentral-docker/jdk/actions/workflows/build-jdk17.yml)
 ## Image description
 
 * Base on the latest version of official alpine Docker Image : [link](https://hub.docker.com/_/alpine/)
 
 Oracle JDK 8
-```bash
-docker pull ringcentral/jdk:8u202
-```
 
 ```bash
 java version "1.8.0_202"
@@ -28,19 +29,26 @@ javac 1.8.0_202
 ```
 
 AdoptOpenJDK 11
-```bash
-docker pull ringcentral/maven:3.6.3-jdk11.0.7
-```
 
 ```bash
 Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
-openjdk version "11.0.7" 2020-04-14
-OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.7+10)
-OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.7+10, mixed mode)
+openjdk version "11.0.12" 2021-07-20
+OpenJDK Runtime Environment Temurin-11.0.12+7 (build 11.0.12+7)
+OpenJDK 64-Bit Server VM Temurin-11.0.12+7 (build 11.0.12+7, mixed mode)
 Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
-javac 11.0.7
+javac 11.0.12
 ```
 
+AdoptOpenJDK 17
+
+```bash
+Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
+openjdk version "17" 2021-09-14
+OpenJDK Runtime Environment Temurin-17+35 (build 17+35)
+OpenJDK 64-Bit Server VM Temurin-17+35 (build 17+35, mixed mode, sharing)
+Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
+javac 17
+```
 ## How to use this image
 
 ### Start a Java instance in your app
