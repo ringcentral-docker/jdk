@@ -7,7 +7,7 @@ on:
     paths:
       # '*' matches any character except '/'
       - 'jdk8/*'
-      - '.github/workflows/*'
+      - '.github/workflows/build-jdk8.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,7 +35,6 @@ jobs:
 
         docker build --tag ${IMAGE_NAME} --file Dockerfile .
 
-        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}"
@@ -45,9 +44,7 @@ jobs:
         docker push "${IMAGE_NAME}:${DETAIL_VERSION}"
         docker push "${IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
         docker push "${IMAGE_NAME}:${VERSION}"
-        docker push "${IMAGE_NAME}:latest"
 
-        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
         docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
         docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
         docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
@@ -57,4 +54,8 @@ jobs:
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_VERSION}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
+
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
+        docker push "${IMAGE_NAME}:latest"
+        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:latest"

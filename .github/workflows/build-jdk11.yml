@@ -7,7 +7,7 @@ on:
     paths:
       # '*' matches any character except '/'
       - 'jdk11/*'
-      - '.github/workflows/*'
+      - '.github/workflows/build-jdk11.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
