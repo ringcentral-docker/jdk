@@ -8,11 +8,11 @@ ENV LANG=en_US.UTF-8 \
     JAVA_DETAIL_VERSION=17.0.3 \
     JAVA_UPDATE_SMALL_VERSION=7 \
     JAVA_BASE_URL=https://github.com/adoptium/temurin17-binaries/releases/download \
-    GCC_LIBS_VERSION=12.1.0-2 \
-    ZLIB_VERSION=1.2.12-2 \
+    GCC_LIBS_VERSION=10.1.0-2 \
+    ZLIB_VERSION=1.2.11-3 \
     ARCHLINUX_BASE_URL=https://archive.archlinux.org/packages \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
-    GLIBC_PACKAGE_VERSION=2.35-r0 \
+    GLIBC_PACKAGE_VERSION=2.30-r0 \
     JAVA_HOME=/opt/java \
     PATH=$PATH:${JAVA_HOME}/bin \
     JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle" \
@@ -31,7 +31,7 @@ RUN apk add --no-cache --virtual=build-dependencies wget \
     && ALPINE_GLIBC_BIN_PACKAGE_FILENAME="glibc-bin-${GLIBC_PACKAGE_VERSION}.apk" \
     && ALPINE_GLIBC_I18N_PACKAGE_FILENAME="glibc-i18n-${GLIBC_PACKAGE_VERSION}.apk" \
     && cd /tmp \
-    && wget -q -O "/etc/apk/keys/sgerrand.rsa.pub" "https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub" \
+    && wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
     && wget "${ALPINE_GLIBC_BASE_URL}/${ALPINE_GLIBC_BASE_PACKAGE_FILENAME}" \
         "${ALPINE_GLIBC_BASE_URL}/${ALPINE_GLIBC_BIN_PACKAGE_FILENAME}" \
         "${ALPINE_GLIBC_BASE_URL}/${ALPINE_GLIBC_I18N_PACKAGE_FILENAME}" \
