@@ -1,18 +1,18 @@
-FROM alpine:3.15.0
+FROM alpine:3.16.0
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     JAVA_VERSION=11 \
-    JAVA_DETAIL_VERSION=11.0.13 \
-    JAVA_UPDATE_SMALL_VERSION=8 \
+    JAVA_DETAIL_VERSION=11.0.15 \
+    JAVA_UPDATE_SMALL_VERSION=10 \
     JAVA_BASE_URL=https://github.com/adoptium/temurin11-binaries/releases/download \
-    GCC_LIBS_VERSION=11.1.0-3 \
-    ZLIB_VERSION=1.2.11-5 \
+    GCC_LIBS_VERSION=12.1.0-2 \
+    ZLIB_VERSION=1.2.12-5 \
     ARCHLINUX_BASE_URL=https://archive.archlinux.org/packages \
     GLIBC_BASE_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download \
-    GLIBC_PACKAGE_VERSION=2.34-r0 \
+    GLIBC_PACKAGE_VERSION=2.35-r0 \
     JAVA_HOME=/opt/java \
     PATH=$PATH:${JAVA_HOME}/bin \
     JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle" \
