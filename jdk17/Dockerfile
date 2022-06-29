@@ -59,7 +59,8 @@ RUN apk add --no-cache --virtual=build-dependencies binutils xz zstd \
     && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
     && mkdir /tmp/zlib \
     && wget "${ARCHLINUX_BASE_URL}/z/zlib/zlib-1%3A${ZLIB_VERSION}-x86_64.pkg.tar.zst" -O zlib.pkg.tar.zst\
-    && tar xvJf zlib.pkg.tar.zst -C /tmp/zlib \
+    && zstd -d /tmp/zlib.pkg.tar.zst --output-dir-flat /tmp \
+    && tar -xf /tmp/zlib.pkg.tar -C /tmp/zlib \
     && mv /tmp/zlib/usr/lib/libz.so* /usr/glibc-compat/lib \
     && apk del build-dependencies \
     && rm -rf /tmp/*
