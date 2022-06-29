@@ -15,7 +15,7 @@ ENV LANG=en_US.UTF-8 \
     GLIBC_PACKAGE_VERSION=2.30-r0 \
     JAVA_HOME=/opt/java \
     PATH=$PATH:${JAVA_HOME}/bin \
-    JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle" \
+    JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle" \
     USER_HOME_DIR="/root"
 
 RUN apk update \
