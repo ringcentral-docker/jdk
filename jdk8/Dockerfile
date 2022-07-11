@@ -77,6 +77,7 @@ RUN apk add --no-cache --virtual=build-dependencies wget unzip \
     && apk del build-dependencies \
     && rm -rf /tmp/*
 
+RUN apk add --no-cache freetype-dev fontconfig
 #==============
 # Show version
 #==============

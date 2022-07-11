@@ -19,7 +19,7 @@ ENV LANG=en_US.UTF-8 \
     USER_HOME_DIR="/root"
 
 RUN apk update \
-    && apk add --no-cache ca-certificates bash git openssh openssl zip subversion sshpass curl
+    && apk add --no-cache ca-certificates bash git openssh openssl zip subversion sshpass curl freetype-dev fontconfig
 
 #====================
 # Install GNU Libc
