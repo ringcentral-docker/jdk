@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.17
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV LANG=en_US.UTF-8 \
