@@ -19,35 +19,31 @@ AdoptOpenJDK 17
 
 * Base on the latest version of official alpine Docker Image : [link](https://hub.docker.com/_/alpine/)
 
-Oracle JDK 8
+Temurin JDK 8
 
 ```bash
-java version "1.8.0_202"
-Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
-Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
-javac 1.8.0_202
+openjdk version "1.8.0_332"
+OpenJDK Runtime Environment (Temurin)(build 1.8.0_332-b09)
+OpenJDK 64-Bit Server VM (Temurin)(build 25.332-b09, mixed mode)
+javac 1.8.0_332
 ```
 
-AdoptOpenJDK 11
+Temurin JDK 11
 
 ```bash
-Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
-openjdk version "11.0.12" 2021-07-20
-OpenJDK Runtime Environment Temurin-11.0.12+7 (build 11.0.12+7)
-OpenJDK 64-Bit Server VM Temurin-11.0.12+7 (build 11.0.12+7, mixed mode)
-Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
-javac 11.0.12
+openjdk version "11.0.18" 2023-01-17
+OpenJDK Runtime Environment Temurin-11.0.18+10 (build 11.0.18+10)
+OpenJDK 64-Bit Server VM Temurin-11.0.18+10 (build 11.0.18+10, mixed mode)
+javac 11.0.18
 ```
 
-AdoptOpenJDK 17
+Temurin JDK 17
 
 ```bash
-Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
-openjdk version "17" 2021-09-14
-OpenJDK Runtime Environment Temurin-17+35 (build 17+35)
-OpenJDK 64-Bit Server VM Temurin-17+35 (build 17+35, mixed mode, sharing)
-Picked up JAVA_TOOL_OPTIONS: -XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
-javac 17
+openjdk version "17.0.6" 2023-01-17
+OpenJDK Runtime Environment Temurin-17.0.6+10 (build 17.0.6+10)
+OpenJDK 64-Bit Server VM Temurin-17.0.6+10 (build 17.0.6+10, mixed mode, sharing)
+javac 17.0.6
 ```
 ## How to use this image
 
