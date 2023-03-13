@@ -28,8 +28,8 @@ jobs:
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
 
-        VERSION="$(awk -F= '/JAVA_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
-        DETAIL_VERSION="$(awk -F= '/JAVA_DETAIL_VERSION=/ {print $2}' Dockerfile | cut -d " " -f 1)"
+        VERSION="$(awk -F= '/JAVA_VERSION=/ {print $2}' jdk11/Dockerfile | cut -d " " -f 1)"
+        DETAIL_VERSION="$(awk -F= '/JAVA_DETAIL_VERSION=/ {print $2}' jdk11/Dockerfile | cut -d " " -f 1)"
         BASE_IMAGE="alpine"
 
         docker build --tag ${IMAGE_NAME} --file jdk11/Dockerfile .
