@@ -1,7 +1,7 @@
 FROM eclipse-temurin:8u332-b09-jdk-alpine as builder
 WORKDIR /workspace/app
 
-COPY ../test/FontTest.java .
+COPY test/FontTest.java .
 
 RUN javac FontTest.java
 
