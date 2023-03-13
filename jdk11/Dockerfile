@@ -9,7 +9,8 @@ FROM eclipse-temurin:11.0.18_10-jdk-alpine
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV JAVA_VERSION=11 \
-    JAVA_DETAIL_VERSION=11.0.18
+    JAVA_DETAIL_VERSION=11.0.18 \
+    JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions"
 
 RUN apk add --no-cache libgcc fontconfig ttf-dejavu ca-certificates bash git openssh openssl zip subversion sshpass curl
 
