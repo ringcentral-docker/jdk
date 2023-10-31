@@ -1,4 +1,4 @@
-name: Build AdoptOpenJDK 17
+name: Build OpenJDK 17
 
 on:
   push:

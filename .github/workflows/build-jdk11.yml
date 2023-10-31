@@ -1,4 +1,4 @@
-name: Build AdoptOpenJDK 11
+name: Build OpenJDK 11
 
 on:
   push:

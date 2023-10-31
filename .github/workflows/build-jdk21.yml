@@ -1,4 +1,4 @@
-name: Build OpenJDK 8
+name: Build OpenJDK 21
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - master
     paths:
       # '*' matches any character except '/'
-      - 'jdk8/*'
-      - '.github/workflows/build-jdk8.yml'
+      - 'jdk21/*'
+      - '.github/workflows/build-jdk21.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
         DOCKER_HUB_USERNAME: ${{ secrets. DOCKER_HUB_USERNAME }} 
         DOCKER_HUB_PASSWORD: ${{ secrets. DOCKER_HUB_PASSWORD }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+        
       run: |
         echo $DOCKER_HUB_PASSWORD | docker login --username $DOCKER_HUB_USERNAME --password-stdin
         echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username $GITHUB_ACTOR --password-stdin
@@ -28,11 +28,11 @@ jobs:
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
 
-        VERSION="$(awk -F= '/JAVA_VERSION=/ {print $2}' jdk8/Dockerfile | cut -d " " -f 1)"
-        DETAIL_VERSION="$(awk -F= '/JAVA_DETAIL_VERSION=/ {print $2}' jdk8/Dockerfile | cut -d " " -f 1)"
+        VERSION="$(awk -F= '/JAVA_VERSION=/ {print $2}' jdk21/Dockerfile | cut -d " " -f 1)"
+        DETAIL_VERSION="$(awk -F= '/JAVA_DETAIL_VERSION=/ {print $2}' jdk21/Dockerfile | cut -d " " -f 1)"
         BASE_IMAGE="alpine"
 
-        docker build --tag ${IMAGE_NAME} --file jdk8/Dockerfile .
+        docker build --tag ${IMAGE_NAME} --file jdk21/Dockerfile .
 
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
@@ -53,8 +53,3 @@ jobs:
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
-
-        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
-        docker push "${IMAGE_NAME}:latest"
-        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
-        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:latest"

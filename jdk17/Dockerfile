@@ -1,15 +1,15 @@
-FROM eclipse-temurin:17.0.6_10-jdk-alpine as builder
+FROM eclipse-temurin:17.0.9_9-jdk-alpine as builder
 WORKDIR /workspace/app
 
 COPY test/FontTest.java .
 
 RUN javac FontTest.java
 
-FROM eclipse-temurin:17.0.6_10-jdk-alpine
+FROM eclipse-temurin:17.0.9_9-jdk-alpine
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV JAVA_VERSION=17 \
-    JAVA_DETAIL_VERSION=17.0.6 \
+    JAVA_DETAIL_VERSION=17.0.9 \
     JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions"
 
 RUN apk add --no-cache libgcc fontconfig ttf-dejavu ca-certificates bash git openssh openssl zip subversion sshpass curl
