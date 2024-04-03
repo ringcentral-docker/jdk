@@ -1,15 +1,15 @@
-FROM eclipse-temurin:8u382-b05-jdk-alpine as builder
+FROM eclipse-temurin:8u402-b06-jdk-alpine as builder
 WORKDIR /workspace/app
 
 COPY test/FontTest.java .
 
 RUN javac FontTest.java
 
-FROM eclipse-temurin:8u382-b05-jdk-alpine
+FROM eclipse-temurin:8u402-b06-jdk-alpine
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV JAVA_VERSION=8 \
-    JAVA_DETAIL_VERSION=8u382 \
+    JAVA_DETAIL_VERSION=8u402 \
     JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions"
 
 RUN apk add --no-cache libgcc fontconfig ttf-dejavu ca-certificates bash git openssh openssl zip subversion sshpass curl
