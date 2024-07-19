@@ -44,23 +44,19 @@ jobs:
           VERSION=$(cat ${JDK_DIR}/version.txt)
           DETAIL_VERSION=$(cat ${JDK_DIR}/detail_version.txt)
         fi
-        echo "::set-output name=jdk_dir::${JDK_DIR}"
-        echo "::set-output name=version::${VERSION}"
-        echo "::set-output name=detail_version::${DETAIL_VERSION}"
-      shell: bash
+        echo "JDK_DIR=${JDK_DIR}" >> $GITHUB_ENV
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "DETAIL_VERSION=${DETAIL_VERSION}" >> $GITHUB_ENV
 
     - name: Build Docker Image
       run: |
         IMAGE_NAME=ringcentral/jdk
-        JDK_DIR=${{ steps.vars.outputs.jdk_dir }}
         docker build --tag ${IMAGE_NAME} --file ${JDK_DIR}/Dockerfile .
 
     - name: Tag and Push Docker Images
       run: |
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
-        VERSION=${{ steps.vars.outputs.version }}
-        DETAIL_VERSION=${{ steps.vars.outputs.detail_version }}
         BASE_IMAGE="alpine"
 
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
@@ -83,7 +79,7 @@ jobs:
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
 
-        if [ ${{ matrix.jdk_version }} -eq 17 ]; then
+        if [ "${{ matrix.jdk_version }}" -eq 17 ]; then
           docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
           docker push "${IMAGE_NAME}:latest"
           docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
@@ -92,8 +88,6 @@ jobs:
 
     - name: Generate README Update
       run: |
-        VERSION=${{ steps.vars.outputs.version }}
-        DETAIL_VERSION=${{ steps.vars.outputs.detail_version }}
         BASE_IMAGE="alpine"
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
@@ -140,7 +134,7 @@ jobs:
         echo "|-------------|------------|------------|----------------|" >> README.md
     - name: Update README
       run: |
-        for file in ./readme-updates/*; do
+        for file in ./readme-updates/readme_updates_*.txt; do
           while IFS= read -r line; do
             JDK_VERSION=$(echo $line | cut -d' ' -f2)
             if grep -q "JDK${JDK_VERSION}" README.md; then
