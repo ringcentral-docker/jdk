@@ -5,18 +5,18 @@ on:
     branches:
       - master
     paths:
-      - 'jdk8/*'
-      - 'jdk11/*'
-      - 'jdk17/*'
-      - 'jdk21/*'
+      - 'jdk*/*'
       - '.github/workflows/build-jdk.yml'
+
+env:
+  JDK_VERSIONS: '["8", "11", "17", "21"]'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        jdk_version: [8, 11, 17, 21]
+        jdk_version: ${{ fromJSON(env.JDK_VERSIONS) }}
       fail-fast: false
 
     steps:
@@ -32,7 +32,6 @@ jobs:
         echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username $GITHUB_ACTOR --password-stdin
 
     - name: Set Environment Variables
-      id: vars
       run: |
         JDK_DIR=jdk${{ matrix.jdk_version }}
         if [[ -f ${JDK_DIR}/Dockerfile ]]; then
@@ -108,25 +107,11 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Download README Updates
-      uses: actions/download-artifact@v4
-      with:
-        name: readme-updates-8
-        path: ./readme-updates
-    - name: Download README Updates
-      uses: actions/download-artifact@v4
-      with:
-        name: readme-updates-11
-        path: ./readme-updates
-    - name: Download README Updates
-      uses: actions/download-artifact@v4
-      with:
-        name: readme-updates-17
-        path: ./readme-updates
-    - name: Download README Updates
-      uses: actions/download-artifact@v4
-      with:
-        name: readme-updates-21
-        path: ./readme-updates
+      run: |
+        for version in ${{ fromJSON(env.JDK_VERSIONS) }}; do
+          mkdir -p ./readme-updates
+          mv $(mktemp -d)/readme_updates_$version.txt ./readme-updates
+        done
 
     - name: Initialize README
       run: |
