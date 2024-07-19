@@ -53,8 +53,3 @@ jobs:
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
-
-        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
-        docker push "${IMAGE_NAME}:latest"
-        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
-        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
