@@ -1,11 +1,11 @@
-FROM amazoncorretto:11.0.24-alpine3.20 as builder
+FROM public.ecr.aws/amazoncorretto/amazoncorretto:11.0.24-alpine3.20 as builder
 WORKDIR /workspace/app
 
 COPY test/FontTest.java .
 
 RUN javac FontTest.java
 
-FROM amazoncorretto:11.0.24-alpine3.20
+FROM public.ecr.aws/amazoncorretto/amazoncorretto:11.0.24-alpine3.20
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV JAVA_VERSION=11 \
