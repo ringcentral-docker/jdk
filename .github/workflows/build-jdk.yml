@@ -101,13 +101,13 @@ jobs:
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
 
         NEW_ENTRY="| JDK${{ matrix.jdk_version }} | ${VERSION} | \`${IMAGE_NAME}:${VERSION}\` \`${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${IMAGE_NAME}:${DETAIL_VERSION}\` \`${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` | \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` |"
-        echo "${NEW_ENTRY}" >> readme_updates.txt
+        echo "${NEW_ENTRY}" > ${{ steps.vars.outputs.jdk_dir }}/readme_updates.txt
 
     - name: Upload README Update
       uses: actions/upload-artifact@v2
       with:
         name: readme-updates
-        path: readme_updates.txt
+        path: ${{ steps.vars.outputs.jdk_dir }}/readme_updates.txt
 
   update-readme:
     needs: build
@@ -130,14 +130,16 @@ jobs:
 
     - name: Update README
       run: |
-        while IFS= read -r line; do
-          JDK_VERSION=$(echo $line | cut -d' ' -f2)
-          if grep -q "JDK${JDK_VERSION}" README.md; then
-            sed -i "/JDK${JDK_VERSION}/c\\$line" README.md
-          else
-            echo "$line" >> README.md
-          fi
-        done < ./readme-updates/readme_updates.txt
+        for file in ./readme-updates/*/readme_updates.txt; do
+          while IFS= read -r line; do
+            JDK_VERSION=$(echo $line | cut -d' ' -f2)
+            if grep -q "JDK${JDK_VERSION}" README.md; then
+              sed -i "/JDK${JDK_VERSION}/c\\$line" README.md
+            else
+              echo "$line" >> README.md
+            fi
+          done < "$file"
+        done
 
     - name: Commit README Update
       run: |
