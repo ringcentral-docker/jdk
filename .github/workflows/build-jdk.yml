@@ -107,7 +107,22 @@ jobs:
     - name: Download README Updates
       uses: actions/download-artifact@v4
       with:
-        name: readme-updates
+        name: readme-updates-8
+        path: ./readme-updates
+    - name: Download README Updates
+      uses: actions/download-artifact@v4
+      with:
+        name: readme-updates-11
+        path: ./readme-updates
+    - name: Download README Updates
+      uses: actions/download-artifact@v4
+      with:
+        name: readme-updates-17
+        path: ./readme-updates
+    - name: Download README Updates
+      uses: actions/download-artifact@v4
+      with:
+        name: readme-updates-21
         path: ./readme-updates
 
     - name: Initialize README
@@ -116,7 +131,7 @@ jobs:
         echo "|-------------|------------|------------|----------------|" >> README.md
     - name: Update README
       run: |
-        for file in ./readme-updates/*; do
+        for file in ./readme-updates/readme_updates_*.txt; do
           while IFS= read -r line; do
             JDK_VERSION=$(echo $line | cut -d' ' -f2)
             if grep -q "JDK${JDK_VERSION}" README.md; then
