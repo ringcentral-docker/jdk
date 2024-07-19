@@ -50,14 +50,12 @@ jobs:
       shell: bash
 
     - name: Build Docker Image
-      if: steps.vars.outputs.version != ''
       run: |
         IMAGE_NAME=ringcentral/jdk
         JDK_DIR=${{ steps.vars.outputs.jdk_dir }}
         docker build --tag ${IMAGE_NAME} --file ${JDK_DIR}/Dockerfile .
 
     - name: Tag and Push Docker Images
-      if: steps.vars.outputs.version != ''
       run: |
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
@@ -101,13 +99,13 @@ jobs:
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
 
         NEW_ENTRY="| JDK${{ matrix.jdk_version }} | ${VERSION} | \`${IMAGE_NAME}:${VERSION}\` \`${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${IMAGE_NAME}:${DETAIL_VERSION}\` \`${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` | \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` |"
-        echo "${NEW_ENTRY}" > readme_updates.txt
+        echo "${NEW_ENTRY}" > readme_updates_${{ matrix.jdk_version }}.txt
 
     - name: Upload README Update
       uses: actions/upload-artifact@v2
       with:
         name: readme-updates-${{ matrix.jdk_version }}
-        path: readme_updates.txt
+        path: readme_updates_${{ matrix.jdk_version }}.txt
 
   update-readme:
     needs: build
@@ -145,7 +143,7 @@ jobs:
 
     - name: Update README
       run: |
-        for file in ./readme-updates/*; do
+        for file in ./readme-updates/readme_updates_*.txt; do
           while IFS= read -r line; do
             JDK_VERSION=$(echo $line | cut -d' ' -f2)
             if grep -q "JDK${JDK_VERSION}" README.md; then
