@@ -22,13 +22,14 @@ jobs:
     - name: Docker login
       env:
         DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-        DOCKER_HUB_PASSWORD: ${{ secrets.DOOLDOCKER_HUB_PASSWORD }}
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo $DOCKER_HUB_PASSWORD | docker login --username $DOCKER_HUB_USERNAME --password-stdin
         echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username $GITHUB_ACTOR --password-stdin
 
     - name: Set Environment Variables
+      id: vars
       run: |
         JDK_DIR=jdk${{ matrix.jdk_version }}
         if [[ -f ${JDK_DIR}/Dockerfile ]]; then
@@ -104,7 +105,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Download README Updates
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: readme-updates
         path: ./readme-updates
