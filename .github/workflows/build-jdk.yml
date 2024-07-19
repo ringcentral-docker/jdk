@@ -8,15 +8,12 @@ on:
       - 'jdk*/*'
       - '.github/workflows/build-jdk.yml'
 
-env:
-  JDK_VERSIONS: '["8", "11", "17", "21"]'
-
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        jdk_version: ${{ fromJSON(env.JDK_VERSIONS) }}
+        jdk_version: [8, 11, 17, 21]
       fail-fast: false
 
     steps:
@@ -25,7 +22,7 @@ jobs:
     - name: Docker login
       env:
         DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOOLDOCKER_HUB_PASSWORD }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo $DOCKER_HUB_PASSWORD | docker login --username $DOCKER_HUB_USERNAME --password-stdin
@@ -107,11 +104,10 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Download README Updates
-      run: |
-        for version in ${{ fromJSON(env.JDK_VERSIONS) }}; do
-          mkdir -p ./readme-updates
-          mv $(mktemp -d)/readme_updates_$version.txt ./readme-updates
-        done
+      uses: actions/download-artifact@v2
+      with:
+        name: readme-updates
+        path: ./readme-updates
 
     - name: Initialize README
       run: |
@@ -119,7 +115,7 @@ jobs:
         echo "|-------------|------------|------------|----------------|" >> README.md
     - name: Update README
       run: |
-        for file in ./readme-updates/readme_updates_*.txt; do
+        for file in ./readme-updates/*; do
           while IFS= read -r line; do
             JDK_VERSION=$(echo $line | cut -d' ' -f2)
             if grep -q "JDK${JDK_VERSION}" README.md; then
