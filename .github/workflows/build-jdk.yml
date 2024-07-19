@@ -100,7 +100,7 @@ jobs:
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
 
-        NEW_ENTRY="| ${VERSION} | \`${IMAGE_NAME}:${VERSION}\` \`${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${IMAGE_NAME}:${DETAIL_VERSION}\` \`${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` | \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` |"
+        NEW_ENTRY="| JDK${{ matrix.jdk_version }} | ${VERSION} | \`${IMAGE_NAME}:${VERSION}\` \`${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${IMAGE_NAME}:${DETAIL_VERSION}\` \`${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` | \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` |"
         echo "${NEW_ENTRY}" >> readme_updates.txt
 
     - name: Upload README Update
@@ -121,14 +121,23 @@ jobs:
         name: readme-updates
         path: ./readme-updates
 
-    - name: Update README
+    - name: Initialize README if needed
       run: |
-        if ! grep -q "| JDK Version | Docker Hub | GitHub Package |" README.md; then
-          HEADER="| JDK Version | Docker Hub | GitHub Package |\n|-------------|------------|----------------|"
+        if ! grep -q "| JDK Version | Version | Docker Hub | GitHub Package |" README.md; then
+          HEADER="| JDK Version | Version | Docker Hub | GitHub Package |\n|-------------|------------|------------|----------------|"
           echo -e "${HEADER}" > README.md
         fi
 
-        cat ./readme-updates/readme_updates.txt >> README.md
+    - name: Update README
+      run: |
+        while IFS= read -r line; do
+          JDK_VERSION=$(echo $line | cut -d' ' -f2)
+          if grep -q "JDK${JDK_VERSION}" README.md; then
+            sed -i "/JDK${JDK_VERSION}/c\\$line" README.md
+          else
+            echo "$line" >> README.md
+          fi
+        done < ./readme-updates/readme_updates.txt
 
     - name: Commit README Update
       run: |
