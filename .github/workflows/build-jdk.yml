@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Docker login
       env:
@@ -101,24 +101,39 @@ jobs:
         GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
 
         NEW_ENTRY="| JDK${{ matrix.jdk_version }} | ${VERSION} | \`${IMAGE_NAME}:${VERSION}\` \`${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${IMAGE_NAME}:${DETAIL_VERSION}\` \`${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` | \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` |"
-        echo "${NEW_ENTRY}" > ${{ steps.vars.outputs.jdk_dir }}/readme_updates.txt
+        echo "${NEW_ENTRY}" > readme_updates.txt
 
     - name: Upload README Update
       uses: actions/upload-artifact@v2
       with:
-        name: readme-updates
-        path: ${{ steps.vars.outputs.jdk_dir }}/readme_updates.txt
+        name: readme-updates-${{ matrix.jdk_version }}
+        path: readme_updates.txt
 
   update-readme:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Download README Updates
       uses: actions/download-artifact@v2
       with:
-        name: readme-updates
+        name: readme-updates-8
+        path: ./readme-updates
+    - name: Download README Updates
+      uses: actions/download-artifact@v2
+      with:
+        name: readme-updates-11
+        path: ./readme-updates
+    - name: Download README Updates
+      uses: actions/download-artifact@v2
+      with:
+        name: readme-updates-17
+        path: ./readme-updates
+    - name: Download README Updates
+      uses: actions/download-artifact@v2
+      with:
+        name: readme-updates-21
         path: ./readme-updates
 
     - name: Initialize README if needed
@@ -130,7 +145,7 @@ jobs:
 
     - name: Update README
       run: |
-        for file in ./readme-updates/*/readme_updates.txt; do
+        for file in ./readme-updates/*; do
           while IFS= read -r line; do
             JDK_VERSION=$(echo $line | cut -d' ' -f2)
             if grep -q "JDK${JDK_VERSION}" README.md; then
