@@ -128,7 +128,7 @@ jobs:
     - name: Initialize README
       run: |
         echo "| JDK Version | Version | Docker Hub | GitHub Package |" > README.md
-        echo "|-------------|------------|------------|----------------|" >> README.md
+        echo "|-------------|---------|------------|----------------|" >> README.md
     - name: Update README
       run: |
         for file in ./readme-updates/readme_updates_*.txt; do
