@@ -1,0 +1,141 @@
+name: Build OpenJDK Images
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'jdk8/*'
+      - 'jdk11/*'
+      - 'jdk17/*'
+      - 'jdk21/*'
+      - '.github/workflows/build-jdk.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk_version: [8, 11, 17, 21]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Docker login
+      env:
+        DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo $DOCKER_HUB_PASSWORD | docker login --username $DOCKER_HUB_USERNAME --password-stdin
+        echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username $GITHUB_ACTOR --password-stdin
+
+    - name: Set Environment Variables
+      id: vars
+      run: |
+        JDK_DIR=jdk${{ matrix.jdk_version }}
+        if [[ -f ${JDK_DIR}/Dockerfile ]]; then
+          VERSION=$(awk -F= '/JAVA_VERSION=/ {print $2}' ${JDK_DIR}/Dockerfile | cut -d " " -f 1)
+          DETAIL_VERSION=$(awk -F= '/JAVA_DETAIL_VERSION=/ {print $2}' ${JDK_DIR}/Dockerfile | cut -d " " -f 1)
+          echo $VERSION > ${JDK_DIR}/version.txt
+          echo $DETAIL_VERSION > ${JDK_DIR}/detail_version.txt
+        else
+          VERSION=$(cat ${JDK_DIR}/version.txt)
+          DETAIL_VERSION=$(cat ${JDK_DIR}/detail_version.txt)
+        fi
+        echo "::set-output name=jdk_dir::${JDK_DIR}"
+        echo "::set-output name=version::${VERSION}"
+        echo "::set-output name=detail_version::${DETAIL_VERSION}"
+      shell: bash
+
+    - name: Build Docker Image
+      if: steps.vars.outputs.version != ''
+      run: |
+        IMAGE_NAME=ringcentral/jdk
+        JDK_DIR=${{ steps.vars.outputs.jdk_dir }}
+        docker build --tag ${IMAGE_NAME} --file ${JDK_DIR}/Dockerfile .
+
+    - name: Tag and Push Docker Images
+      if: steps.vars.outputs.version != ''
+      run: |
+        IMAGE_NAME=ringcentral/jdk
+        GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
+        VERSION=${{ steps.vars.outputs.version }}
+        DETAIL_VERSION=${{ steps.vars.outputs.detail_version }}
+        BASE_IMAGE="alpine"
+
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}"
+        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
+        
+        docker push "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
+        docker push "${IMAGE_NAME}:${DETAIL_VERSION}"
+        docker push "${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
+        docker push "${IMAGE_NAME}:${VERSION}"
+
+        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
+        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
+        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
+        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
+        
+        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
+        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
+        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
+        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
+
+        if [ ${{ matrix.jdk_version }} -eq 17 ]; then
+          docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
+          docker push "${IMAGE_NAME}:latest"
+          docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
+          docker push "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
+        fi
+
+    - name: Generate README Update
+      run: |
+        VERSION=${{ steps.vars.outputs.version }}
+        DETAIL_VERSION=${{ steps.vars.outputs.detail_version }}
+        BASE_IMAGE="alpine"
+        IMAGE_NAME=ringcentral/jdk
+        GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
+
+        NEW_ENTRY="| ${VERSION} | \`${IMAGE_NAME}:${VERSION}\` \`${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${IMAGE_NAME}:${DETAIL_VERSION}\` \`${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` | \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` |"
+        echo "${NEW_ENTRY}" >> readme_updates.txt
+
+    - name: Upload README Update
+      uses: actions/upload-artifact@v2
+      with:
+        name: readme-updates
+        path: readme_updates.txt
+
+  update-readme:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Download README Updates
+      uses: actions/download-artifact@v2
+      with:
+        name: readme-updates
+        path: ./readme-updates
+
+    - name: Update README
+      run: |
+        if ! grep -q "| JDK Version | Docker Hub | GitHub Package |" README.md; then
+          HEADER="| JDK Version | Docker Hub | GitHub Package |\n|-------------|------------|----------------|"
+          echo -e "${HEADER}" > README.md
+        fi
+
+        cat ./readme-updates/readme_updates.txt >> README.md
+
+    - name: Commit README Update
+      run: |
+        git config --global user.name 'john.lin'
+        git config --global user.email 'john.lin@ringcentral.com'
+        git add README.md
+        git commit -m "Update README with Docker image info"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
