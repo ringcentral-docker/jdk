@@ -134,16 +134,13 @@ jobs:
         name: readme-updates-21
         path: ./readme-updates
 
-    - name: Initialize README if needed
+    - name: Initialize README
       run: |
-        if ! grep -q "| JDK Version | Version | Docker Hub | GitHub Package |" README.md; then
-          HEADER="| JDK Version | Version | Docker Hub | GitHub Package |\n|-------------|------------|------------|----------------|"
-          echo -e "${HEADER}" > README.md
-        fi
+        echo "| JDK Version | Version | Docker Hub | GitHub Package |\n|-------------|------------|------------|----------------|" > README.md
 
     - name: Update README
       run: |
-        for file in ./readme-updates/readme_updates_*.txt; do
+        for file in ./readme-updates/*; do
           while IFS= read -r line; do
             JDK_VERSION=$(echo $line | cut -d' ' -f2)
             if grep -q "JDK${JDK_VERSION}" README.md; then
