@@ -53,7 +53,7 @@ jobs:
     - name: Tag and Push Docker Images
       run: |
         IMAGE_NAME=ringcentral/jdk
-        GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
+        GH_DOCKER_PKG_IMAGE_NAME=ghcr.io/ringcentral-docker/jdk/jdk
         BASE_IMAGE="alpine"
 
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
@@ -87,7 +87,7 @@ jobs:
       run: |
         BASE_IMAGE="alpine"
         IMAGE_NAME=ringcentral/jdk
-        GH_DOCKER_PKG_IMAGE_NAME=docker.pkg.github.com/ringcentral-docker/jdk/jdk
+        GH_DOCKER_PKG_IMAGE_NAME=ghcr.io/ringcentral-docker/jdk/jdk
 
         NEW_ENTRY="| JDK${{ matrix.jdk_version }} | ${VERSION} | \`${IMAGE_NAME}:${VERSION}\` \`${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${IMAGE_NAME}:${DETAIL_VERSION}\` \`${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` | \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}\` \`${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}\` |"
         echo "${NEW_ENTRY}" > readme_updates_${{ matrix.jdk_version }}.txt
