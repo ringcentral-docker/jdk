@@ -1,5 +1,5 @@
 | JDK Version | Version | Docker Hub | GitHub Package |
-|-------------|------------|------------|----------------|
+|-------------|---------|------------|----------------|
 | JDK11 | 11 | `ringcentral/jdk:11` `ringcentral/jdk:11-alpine` `ringcentral/jdk:11.0.24` `ringcentral/jdk:11.0.24-alpine` | `ghcr.io/ringcentral-docker/jdk/jdk:11` `ghcr.io/ringcentral-docker/jdk/jdk:11-alpine` `ghcr.io/ringcentral-docker/jdk/jdk:11.0.24` `ghcr.io/ringcentral-docker/jdk/jdk:11.0.24-alpine` |
 | JDK17 | 17 | `ringcentral/jdk:17` `ringcentral/jdk:17-alpine` `ringcentral/jdk:17.0.12` `ringcentral/jdk:17.0.12-alpine` | `ghcr.io/ringcentral-docker/jdk/jdk:17` `ghcr.io/ringcentral-docker/jdk/jdk:17-alpine` `ghcr.io/ringcentral-docker/jdk/jdk:17.0.12` `ghcr.io/ringcentral-docker/jdk/jdk:17.0.12-alpine` |
 | JDK21 | 21 | `ringcentral/jdk:21` `ringcentral/jdk:21-alpine` `ringcentral/jdk:21.0.4` `ringcentral/jdk:21.0.4-alpine` | `ghcr.io/ringcentral-docker/jdk/jdk:21` `ghcr.io/ringcentral-docker/jdk/jdk:21-alpine` `ghcr.io/ringcentral-docker/jdk/jdk:21.0.4` `ghcr.io/ringcentral-docker/jdk/jdk:21.0.4-alpine` |
