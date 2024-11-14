@@ -1,15 +1,15 @@
-FROM public.ecr.aws/docker/library/amazoncorretto:11.0.24-alpine3.20 as builder
+FROM public.ecr.aws/docker/library/amazoncorretto:11.0.25-alpine3.20 as builder
 WORKDIR /workspace/app
 
 COPY test/FontTest.java .
 
 RUN javac FontTest.java
 
-FROM public.ecr.aws/docker/library/amazoncorretto:11.0.24-alpine3.20
+FROM public.ecr.aws/docker/library/amazoncorretto:11.0.25-alpine3.20
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV JAVA_VERSION=11 \
-    JAVA_DETAIL_VERSION=11.0.24 \
+    JAVA_DETAIL_VERSION=11.0.25 \
     JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions"
 
 RUN apk add --no-cache libgcc fontconfig ttf-dejavu ca-certificates bash git openssh openssl zip subversion sshpass curl
