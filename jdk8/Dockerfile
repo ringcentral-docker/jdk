@@ -1,11 +1,11 @@
-FROM public.ecr.aws/docker/library/amazoncorretto:8u432-alpine3.20 as builder
+FROM public.ecr.aws/docker/library/eclipse-temurin:8u432-b06-jdk-alpine as builder
 WORKDIR /workspace/app
 
 COPY test/FontTest.java .
 
 RUN javac FontTest.java
 
-FROM public.ecr.aws/docker/library/amazoncorretto:8u432-alpine3.20
+FROM public.ecr.aws/docker/library/eclipse-temurin:8u432-b06-jdk-alpine
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV JAVA_VERSION=8 \
