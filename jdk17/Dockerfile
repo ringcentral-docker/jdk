@@ -1,15 +1,15 @@
-FROM public.ecr.aws/docker/library/eclipse-temurin:17.0.13_11-jdk-alpine as builder
+FROM public.ecr.aws/docker/library/eclipse-temurin:17.0.11_9-jdk-alpine as builder
 WORKDIR /workspace/app
 
 COPY test/FontTest.java .
 
 RUN javac FontTest.java
 
-FROM public.ecr.aws/docker/library/eclipse-temurin:17.0.13_11-jdk-alpine
+FROM public.ecr.aws/docker/library/eclipse-temurin:17.0.11_9-jdk-alpine
 LABEL maintainer="john.lin@ringcentral.com"
 
 ENV JAVA_VERSION=17 \
-    JAVA_DETAIL_VERSION=17.0.13 \
+    JAVA_DETAIL_VERSION=17.0.11 \
     JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions"
 
 RUN apk add --no-cache libgcc fontconfig ttf-dejavu ca-certificates bash git openssh openssl zip subversion sshpass curl
