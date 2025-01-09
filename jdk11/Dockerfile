@@ -18,6 +18,11 @@ COPY --from=builder /workspace/app/FontTest.class .
 
 RUN java FontTest && rm -f FontTest.class
 
+# Install vanilla GLibC: https://github.com/sgerrand/alpine-pkg-glibc
+RUN curl -o /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+&& curl -LO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r1/glibc-2.35-r1.apk \
+&& apk add glibc-2.35-r1.apk
+
 #==============
 # Show version
 #==============
