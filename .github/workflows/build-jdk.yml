@@ -54,7 +54,7 @@ jobs:
       run: |
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=ghcr.io/ringcentral-docker/jdk/jdk
-        BASE_IMAGE="alpine"
+        BASE_IMAGE="noble"
 
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
         docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
@@ -85,7 +85,7 @@ jobs:
 
     - name: Generate README Update
       run: |
-        BASE_IMAGE="alpine"
+        BASE_IMAGE="noble"
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=ghcr.io/ringcentral-docker/jdk/jdk
 
