@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        jdk_version: [8, 11, 17, 21]
+        jdk_version: [8, 11, 17, 21, 17-docker]
       fail-fast: false
 
     steps:
@@ -76,7 +76,7 @@ jobs:
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
 
-        if [ "${{ matrix.jdk_version }}" -eq 17 ]; then
+        if [ "${{ matrix.jdk_version }}" -eq 17 ] || [ "${{ matrix.jdk_version }}" = "17-docker" ]; then
           docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
           docker push "${IMAGE_NAME}:latest"
           docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
@@ -123,6 +123,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: readme-updates-21
+        path: ./readme-updates
+    - name: Download README Updates
+      uses: actions/download-artifact@v4
+      with:
+        name: readme-updates-17-docker
         path: ./readme-updates
 
     - name: Initialize README
