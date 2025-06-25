@@ -41,6 +41,13 @@ jobs:
           VERSION=$(cat ${JDK_DIR}/version.txt)
           DETAIL_VERSION=$(cat ${JDK_DIR}/detail_version.txt)
         fi
+        
+        # Add suffix for docker versions to avoid naming conflicts
+        if [[ "${{ matrix.jdk_version }}" == *"-docker" ]]; then
+          VERSION="${VERSION}-docker"
+          DETAIL_VERSION="${DETAIL_VERSION}-docker"
+        fi
+        
         echo "JDK_DIR=${JDK_DIR}" >> $GITHUB_ENV
         echo "VERSION=${VERSION}" >> $GITHUB_ENV
         echo "DETAIL_VERSION=${DETAIL_VERSION}" >> $GITHUB_ENV
