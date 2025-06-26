@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install coverage conversion tools for CI
-RUN pip3 install --no-cache-dir coverage-badge jacoco-badge-generator
+RUN pip3 install --no-cache-dir --break-system-packages coverage-badge jacoco-badge-generator
 
 RUN apt-get update
 RUN apt-get install -y ca-certificates curl gnupg lsb-release
