@@ -36,7 +36,7 @@ RUN wget https://github.com/viclovsky/swagger-coverage/releases/download/1.5.0/s
     && ln -s /opt/swagger-coverage/bin/swagger-coverage-commandline /usr/local/bin/swagger-coverage
 
 # Copy jacococli.jar to the image
-COPY jacococli.jar /opt/jacoco/jacococli.jar
+COPY ./jdk17-jacoco/jacococli.jar /opt/jacoco/jacococli.jar
 
 COPY --from=builder /workspace/app/FontTest.class .
 
