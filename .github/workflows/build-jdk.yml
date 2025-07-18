@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        jdk_version: [8, 11, 17, 21, 17-docker]
+        jdk_version: [8, 11, 17, 21, 17-docker, 17-jacoco]
       fail-fast: false
 
     steps:
@@ -42,10 +42,13 @@ jobs:
           DETAIL_VERSION=$(cat ${JDK_DIR}/detail_version.txt)
         fi
         
-        # Add suffix for docker versions to avoid naming conflicts
+        # Add suffix for docker and jacoco versions to avoid naming conflicts
         if [[ "${{ matrix.jdk_version }}" == *"-docker" ]]; then
           VERSION="${VERSION}-docker"
           DETAIL_VERSION="${DETAIL_VERSION}-docker"
+        elif [[ "${{ matrix.jdk_version }}" == *"-jacoco" ]]; then
+          VERSION="${VERSION}-jacoco"
+          DETAIL_VERSION="${DETAIL_VERSION}-jacoco"
         fi
         
         echo "JDK_DIR=${JDK_DIR}" >> $GITHUB_ENV
@@ -83,7 +86,7 @@ jobs:
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
         docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
 
-        if [ "${{ matrix.jdk_version }}" -eq 17 ] || [ "${{ matrix.jdk_version }}" = "17-docker" ]; then
+        if [ "${{ matrix.jdk_version }}" -eq 17 ] || [ "${{ matrix.jdk_version }}" = "17-docker" ] || [ "${{ matrix.jdk_version }}" = "17-jacoco" ]; then
           docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
           docker push "${IMAGE_NAME}:latest"
           docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
@@ -135,6 +138,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: readme-updates-17-docker
+        path: ./readme-updates
+    - name: Download README Updates
+      uses: actions/download-artifact@v4
+      with:
+        name: readme-updates-17-jacoco
         path: ./readme-updates
 
     - name: Initialize README
