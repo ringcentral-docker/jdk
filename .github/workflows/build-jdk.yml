@@ -19,6 +19,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: linux/amd64,linux/arm64,darwin/amd64,darwin/arm64
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
     - name: Docker login
       env:
         DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -55,43 +63,50 @@ jobs:
         echo "VERSION=${VERSION}" >> $GITHUB_ENV
         echo "DETAIL_VERSION=${DETAIL_VERSION}" >> $GITHUB_ENV
 
-    - name: Build Docker Image
-      run: |
-        IMAGE_NAME=ringcentral/jdk
-        docker build --tag ${IMAGE_NAME} --file ${JDK_DIR}/Dockerfile .
-
-    - name: Tag and Push Docker Images
+    - name: Build and Push Multi-Platform Docker Images
       run: |
         IMAGE_NAME=ringcentral/jdk
         GH_DOCKER_PKG_IMAGE_NAME=ghcr.io/ringcentral-docker/jdk/jdk
         BASE_IMAGE="noble"
-
-        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}"
-        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
-        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}"
-        docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
         
-        docker push "${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
-        docker push "${IMAGE_NAME}:${DETAIL_VERSION}"
-        docker push "${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
-        docker push "${IMAGE_NAME}:${VERSION}"
-
-        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
-        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
-        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
-        docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
+        # Define platforms for multi-platform build
+        PLATFORMS="linux/amd64,linux/arm64,darwin/amd64,darwin/arm64"
         
-        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
-        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
-        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
-        docker push "${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
-
+        # Prepare all tags for Docker Hub
+        DOCKER_HUB_TAGS=""
+        DOCKER_HUB_TAGS="${DOCKER_HUB_TAGS} --tag ${IMAGE_NAME}:${VERSION}"
+        DOCKER_HUB_TAGS="${DOCKER_HUB_TAGS} --tag ${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
+        DOCKER_HUB_TAGS="${DOCKER_HUB_TAGS} --tag ${IMAGE_NAME}:${DETAIL_VERSION}"
+        DOCKER_HUB_TAGS="${DOCKER_HUB_TAGS} --tag ${IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
+        
+        # Prepare all tags for GitHub Container Registry
+        GH_TAGS=""
+        GH_TAGS="${GH_TAGS} --tag ${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}"
+        GH_TAGS="${GH_TAGS} --tag ${GH_DOCKER_PKG_IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
+        GH_TAGS="${GH_TAGS} --tag ${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}"
+        GH_TAGS="${GH_TAGS} --tag ${GH_DOCKER_PKG_IMAGE_NAME}:${DETAIL_VERSION}-${BASE_IMAGE}"
+        
+        # Add latest tags for JDK 17 variants
         if [ "${{ matrix.jdk_version }}" -eq 17 ] || [ "${{ matrix.jdk_version }}" = "17-docker" ] || [ "${{ matrix.jdk_version }}" = "17-jacoco" ]; then
-          docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
-          docker push "${IMAGE_NAME}:latest"
-          docker tag "${IMAGE_NAME}" "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
-          docker push "${GH_DOCKER_PKG_IMAGE_NAME}:latest"
+          DOCKER_HUB_TAGS="${DOCKER_HUB_TAGS} --tag ${IMAGE_NAME}:latest"
+          GH_TAGS="${GH_TAGS} --tag ${GH_DOCKER_PKG_IMAGE_NAME}:latest"
         fi
+        
+        # Build and push to Docker Hub (single build with all tags)
+        docker buildx build \
+          --platform ${PLATFORMS} \
+          ${DOCKER_HUB_TAGS} \
+          --file ${JDK_DIR}/Dockerfile \
+          --push \
+          .
+        
+        # Build and push to GitHub Container Registry (single build with all tags)
+        docker buildx build \
+          --platform ${PLATFORMS} \
+          ${GH_TAGS} \
+          --file ${JDK_DIR}/Dockerfile \
+          --push \
+          .
 
     - name: Generate README Update
       run: |
