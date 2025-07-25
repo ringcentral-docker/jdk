@@ -22,7 +22,7 @@ jobs:
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
       with:
-        platforms: linux/amd64,linux/arm64,darwin/amd64,darwin/arm64
+        platforms: linux/amd64,linux/arm64
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -70,7 +70,7 @@ jobs:
         BASE_IMAGE="noble"
         
         # Define platforms for multi-platform build
-        PLATFORMS="linux/amd64,linux/arm64,darwin/amd64,darwin/arm64"
+        PLATFORMS="linux/amd64,linux/arm64"
         
         # Prepare all tags for Docker Hub
         DOCKER_HUB_TAGS=""
