@@ -1,11 +1,12 @@
 # Parameterized JDK Dockerfile with variant support
 #
 # Build examples:
-#   Standard:    docker build --build-arg BASE_IMAGE_TAG=17.0.13_11-jdk-noble --build-arg JAVA_VERSION=17 --build-arg JAVA_DETAIL_VERSION=17.0.13 .
-#   With Docker: docker build --build-arg BASE_IMAGE_TAG=17.0.13_11-jdk-noble --build-arg JAVA_VERSION=17 --build-arg JAVA_DETAIL_VERSION=17.0.13 --build-arg VARIANT=docker .
-#   With Jacoco: docker build --build-arg BASE_IMAGE_TAG=17.0.13_11-jdk-noble --build-arg JAVA_VERSION=17 --build-arg JAVA_DETAIL_VERSION=17.0.13 --build-arg VARIANT=jacoco .
+#   Standard:    docker build --build-arg BASE_IMAGE_TAG=21.0.9_10-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.9 .
+#   With Docker: docker build --build-arg BASE_IMAGE_TAG=21.0.9_10-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.9 --build-arg VARIANT=docker .
+#   With Jacoco: docker build --build-arg BASE_IMAGE_TAG=21.0.9_10-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.9 --build-arg VARIANT=jacoco .
 
-ARG BASE_IMAGE_TAG
+# Default to JDK 21 LTS
+ARG BASE_IMAGE_TAG=21.0.9_10-jdk-noble
 
 # =============================================================================
 # Builder Stage: Compile font test
@@ -21,8 +22,8 @@ RUN javac FontTest.java
 # =============================================================================
 FROM public.ecr.aws/docker/library/eclipse-temurin:${BASE_IMAGE_TAG}
 
-ARG JAVA_VERSION
-ARG JAVA_DETAIL_VERSION
+ARG JAVA_VERSION=21
+ARG JAVA_DETAIL_VERSION=21.0.9
 ARG VARIANT=standard
 
 ENV JAVA_VERSION=${JAVA_VERSION} \
@@ -35,16 +36,6 @@ RUN chmod +x /tmp/scripts/*.sh
 
 # Install base dependencies (always)
 RUN /tmp/scripts/install-base.sh
-
-# Install variant-specific dependencies
-RUN if [ "$VARIANT" = "docker" ]; then \
-        /tmp/scripts/install-docker.sh; \
-    elif [ "$VARIANT" = "jacoco" ]; then \
-        /tmp/scripts/install-jacoco.sh; \
-    fi
-
-# Copy jacococli.jar for jacoco variant (if exists)
-COPY assets/jacococli.ja[r] /opt/jacoco/
 
 # Cleanup installation scripts
 RUN rm -rf /tmp/scripts

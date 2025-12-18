@@ -12,7 +12,5 @@ apt-get update && apt-get install -y --no-install-recommends \
     openssh-client \
     openssl \
     zip \
-    subversion \
-    sshpass \
     curl \
     && rm -rf /var/lib/apt/lists/*
