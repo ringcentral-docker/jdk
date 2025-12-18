@@ -1,0 +1,73 @@
+{
+  "versions": [
+    {
+      "name": "jdk8",
+      "java_version": "8",
+      "detail_version": "8u472",
+      "base_image_tag": "8u472-b08-jdk-noble",
+      "variant": "standard",
+      "is_latest": false
+    },
+    {
+      "name": "jdk11",
+      "java_version": "11",
+      "detail_version": "11.0.29",
+      "base_image_tag": "11.0.29_7-jdk-noble",
+      "variant": "standard",
+      "is_latest": false
+    },
+    {
+      "name": "jdk17",
+      "java_version": "17",
+      "detail_version": "17.0.17",
+      "base_image_tag": "17.0.17_10-jdk-noble",
+      "variant": "standard",
+      "is_latest": false
+    },
+    {
+      "name": "jdk21",
+      "java_version": "21",
+      "detail_version": "21.0.9",
+      "base_image_tag": "21.0.9_10-jdk-noble",
+      "variant": "standard",
+      "is_latest": true
+    },
+    {
+      "name": "jdk25",
+      "java_version": "25",
+      "detail_version": "25.0.1",
+      "base_image_tag": "25.0.1_8-jdk-noble",
+      "variant": "standard",
+      "is_latest": false
+    }
+  ],
+  "_disabled_versions_comment": "以下版本暂时禁用，需要时移回 versions 数组即可启用",
+  "_disabled_versions": [
+    {
+      "name": "jdk17-docker",
+      "java_version": "17",
+      "detail_version": "17.0.17",
+      "base_image_tag": "17.0.17_10-jdk-noble",
+      "variant": "docker",
+      "suffix": "-docker",
+      "is_latest": false
+    },
+    {
+      "name": "jdk17-jacoco",
+      "java_version": "17",
+      "detail_version": "17.0.17",
+      "base_image_tag": "17.0.17_10-jdk-noble",
+      "variant": "jacoco",
+      "suffix": "-jacoco",
+      "is_latest": false
+    }
+  ],
+  "common": {
+    "base_os": "noble",
+    "registry": {
+      "docker_hub": "ringcentral/jdk",
+      "ghcr": "ghcr.io/ringcentral-docker/jdk"
+    },
+    "platforms": ["linux/amd64", "linux/arm64"]
+  }
+}

@@ -1,0 +1,211 @@
+name: Build OpenJDK Images
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'Dockerfile'
+      - 'versions/**'
+      - 'scripts/**'
+      - 'assets/**'
+      - 'test/**'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Specific JDK version to build (e.g., jdk17), or "all" for all versions'
+        required: false
+        default: 'all'
+
+env:
+  DOCKER_HUB_IMAGE: ringcentral/jdk
+  GHCR_IMAGE: ghcr.io/ringcentral-docker/jdk
+  BASE_OS: noble
+
+jobs:
+  # =============================================================================
+  # Generate build matrix from versions.json
+  # =============================================================================
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate build matrix
+        id: set-matrix
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.version }}" != "all" ]]; then
+            MATRIX=$(jq -c --arg v "${{ github.event.inputs.version }}" \
+              '{include: [.versions[] | select(.name == $v)]}' versions/versions.json)
+          else
+            MATRIX=$(jq -c '{include: .versions}' versions/versions.json)
+          fi
+          echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
+
+  # =============================================================================
+  # Build and push Docker images
+  # =============================================================================
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare version variables
+        id: vars
+        run: |
+          VERSION="${{ matrix.java_version }}"
+          DETAIL_VERSION="${{ matrix.detail_version }}"
+          SUFFIX="${{ matrix.suffix }}"
+
+          if [[ -n "${SUFFIX}" ]]; then
+            VERSION="${VERSION}${SUFFIX}"
+            DETAIL_VERSION="${DETAIL_VERSION}${SUFFIX}"
+          fi
+
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "detail_version=${DETAIL_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Generate Docker tags
+        id: meta
+        run: |
+          VERSION="${{ steps.vars.outputs.version }}"
+          DETAIL_VERSION="${{ steps.vars.outputs.detail_version }}"
+          IS_LATEST="${{ matrix.is_latest }}"
+
+          TAGS=""
+          for REGISTRY in "${{ env.DOCKER_HUB_IMAGE }}" "${{ env.GHCR_IMAGE }}"; do
+            TAGS="${TAGS}${REGISTRY}:${VERSION},"
+            TAGS="${TAGS}${REGISTRY}:${VERSION}-${{ env.BASE_OS }},"
+            TAGS="${TAGS}${REGISTRY}:${DETAIL_VERSION},"
+            TAGS="${TAGS}${REGISTRY}:${DETAIL_VERSION}-${{ env.BASE_OS }},"
+            if [[ "${IS_LATEST}" == "true" ]]; then
+              TAGS="${TAGS}${REGISTRY}:latest,"
+            fi
+          done
+
+          echo "tags=${TAGS%,}" >> $GITHUB_OUTPUT
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            BASE_IMAGE_TAG=${{ matrix.base_image_tag }}
+            JAVA_VERSION=${{ matrix.java_version }}
+            JAVA_DETAIL_VERSION=${{ matrix.detail_version }}
+            VARIANT=${{ matrix.variant }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+  # =============================================================================
+  # Update README - Generate directly from versions.json (no artifacts needed)
+  # =============================================================================
+  update-readme:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate README from versions.json
+        run: |
+          cat > README.md << 'HEADER'
+          # JDK Docker Images
+
+          Multi-platform JDK Docker images based on Eclipse Temurin.
+
+          ## Supported Platforms
+
+          - linux/amd64
+          - linux/arm64
+
+          ## Available Images
+
+          | JDK Version | Version | Docker Hub Tags | GitHub Package Tags |
+          |-------------|---------|-----------------|---------------------|
+          HEADER
+
+          # Generate table rows from versions.json using jq
+          jq -r --arg hub "${{ env.DOCKER_HUB_IMAGE }}" \
+                --arg ghcr "${{ env.GHCR_IMAGE }}" \
+                --arg os "${{ env.BASE_OS }}" \
+            '.versions[] |
+              (if .suffix then .java_version + .suffix else .java_version end) as $ver |
+              (if .suffix then .detail_version + .suffix else .detail_version end) as $detail |
+              "| \(.name) | \($ver) | `\($hub):\($ver)` `\($hub):\($detail)` | `\($ghcr):\($ver)` `\($ghcr):\($detail)` |"
+            ' versions/versions.json >> README.md
+
+          cat >> README.md << 'FOOTER'
+
+          ## Usage
+
+          ```bash
+          # Pull from Docker Hub
+          docker pull ringcentral/jdk:21
+
+          # Pull from GitHub Container Registry
+          docker pull ghcr.io/ringcentral-docker/jdk/jdk:21
+
+          # Run with specific version
+          docker run -it ringcentral/jdk:21 java -version
+          ```
+
+          ## Build Locally
+
+          ```bash
+          # Build specific version (see versions/versions.json for available configurations)
+          docker build \
+            --build-arg BASE_IMAGE_TAG=21.0.5_11-jdk-noble \
+            --build-arg JAVA_VERSION=21 \
+            --build-arg JAVA_DETAIL_VERSION=21.0.5 \
+            -t my-jdk:21 .
+          ```
+
+          ## License
+
+          MIT License
+          FOOTER
+
+      - name: Commit README
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update README with Docker image info"
+            git push
+          fi
