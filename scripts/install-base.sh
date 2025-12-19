@@ -12,5 +12,6 @@ apt-get update && apt-get install -y --no-install-recommends \
     openssh-client \
     openssl \
     zip \
+    unzip \
     curl \
     && rm -rf /var/lib/apt/lists/*
