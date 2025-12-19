@@ -14,4 +14,5 @@ apt-get update && apt-get install -y --no-install-recommends \
     zip \
     unzip \
     curl \
+    wget \
     && rm -rf /var/lib/apt/lists/*
