@@ -1,12 +1,12 @@
 # Parameterized JDK Dockerfile with variant support
 #
 # Build examples:
-#   Standard:    docker build --build-arg BASE_IMAGE_TAG=21.0.9_10-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.9 .
-#   With Docker: docker build --build-arg BASE_IMAGE_TAG=21.0.9_10-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.9 --build-arg VARIANT=docker .
-#   With Jacoco: docker build --build-arg BASE_IMAGE_TAG=21.0.9_10-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.9 --build-arg VARIANT=jacoco .
+#   Standard:    docker build --build-arg BASE_IMAGE_TAG=21.0.10_7-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.10 .
+#   With Docker: docker build --build-arg BASE_IMAGE_TAG=21.0.10_7-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.10 --build-arg VARIANT=docker .
+#   With Jacoco: docker build --build-arg BASE_IMAGE_TAG=21.0.10_7-jdk-noble --build-arg JAVA_VERSION=21 --build-arg JAVA_DETAIL_VERSION=21.0.10 --build-arg VARIANT=jacoco .
 
 # Default to JDK 21 LTS
-ARG BASE_IMAGE_TAG=21.0.9_10-jdk-noble
+ARG BASE_IMAGE_TAG=21.0.10_7-jdk-noble
 
 # =============================================================================
 # Builder Stage: Compile font test
@@ -23,7 +23,7 @@ RUN javac FontTest.java
 FROM public.ecr.aws/docker/library/eclipse-temurin:${BASE_IMAGE_TAG}
 
 ARG JAVA_VERSION=21
-ARG JAVA_DETAIL_VERSION=21.0.9
+ARG JAVA_DETAIL_VERSION=21.0.10
 ARG VARIANT=standard
 
 ENV JAVA_VERSION=${JAVA_VERSION} \
