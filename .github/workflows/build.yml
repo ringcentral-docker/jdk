@@ -140,6 +140,10 @@ jobs:
             JAVA_VERSION=${{ matrix.java_version }}
             JAVA_DETAIL_VERSION=${{ matrix.detail_version }}
             VARIANT=${{ matrix.variant }}
+            JMODS_RELEASE_TAG=${{ matrix.jmods_release_tag }}
+            JMODS_ARCHIVE_VERSION=${{ matrix.jmods_archive_version }}
+            JMODS_SHA256_AMD64=${{ matrix.jmods_sha256_amd64 }}
+            JMODS_SHA256_ARM64=${{ matrix.jmods_sha256_arm64 }}
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
 

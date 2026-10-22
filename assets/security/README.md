@@ -22,6 +22,10 @@ During every image build, `UpdateBlockedCertificates` locates the security file
 under the running JVM's `java.home`: `blacklisted.certs` for Java 8 and
 `blocked.certs` for newer releases. It also updates the blocklist inside
 `jmods/java.base.jmod` so runtimes produced by `jlink` inherit the same distrust.
+Temurin 25 omits JMODs; its linkable runtime rejects a modified `blocked.certs`.
+The build restores matching official Temurin JMODs with architecture-specific
+SHA-256 checksums pinned in `versions/versions.json`, then updates that copy too.
+This preserves ordinary `jlink` behavior and its runtime integrity checks.
 It fails the build if the existing file does
 not use SHA-256. Tests check preservation and idempotence, then exercise PKIX
 validation against all 48 encodings in `test/fixtures/cve-2026-91403.pem` and an

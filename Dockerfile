@@ -26,6 +26,10 @@ FROM docker.io/library/eclipse-temurin:${BASE_IMAGE_TAG}
 ARG JAVA_VERSION=21
 ARG JAVA_DETAIL_VERSION=21.0.12.1
 ARG VARIANT=standard
+ARG JMODS_RELEASE_TAG
+ARG JMODS_ARCHIVE_VERSION
+ARG JMODS_SHA256_AMD64
+ARG JMODS_SHA256_ARM64
 
 ENV JAVA_VERSION=${JAVA_VERSION} \
     JAVA_DETAIL_VERSION=${JAVA_DETAIL_VERSION} \
@@ -37,6 +41,7 @@ RUN chmod +x /tmp/scripts/*.sh
 
 # Install base dependencies (always)
 RUN /tmp/scripts/install-base.sh
+RUN /tmp/scripts/install-jmods.sh
 
 # Apply the upstream CVE-2026-91403 distrust to the effective runtime security file.
 COPY assets/security/cve-2026-91403.properties test/fixtures/cve-2026-91403.pem /tmp/java-security/

@@ -37,6 +37,10 @@
       "java_version": "25",
       "detail_version": "25.0.4.1",
       "base_image_tag": "25.0.4.1_1-jdk-noble",
+      "jmods_release_tag": "jdk-25.0.4.1+1",
+      "jmods_archive_version": "25.0.4.1_1",
+      "jmods_sha256_amd64": "c51cb1900283b00e7f9b1db1c6e430cc168d43ed240f496eb34b4d5796fdb81d",
+      "jmods_sha256_arm64": "ffd6173fa4cb625b1649f68d9ca260ca5319c312a45d1cd5781664253d249b81",
       "variant": "standard",
       "is_latest": false
     }
