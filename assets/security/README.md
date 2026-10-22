@@ -20,10 +20,13 @@ existing blocklist and any custom entries.
 
 During every image build, `UpdateBlockedCertificates` locates the security file
 under the running JVM's `java.home`: `blacklisted.certs` for Java 8 and
-`blocked.certs` for newer releases. It fails the build if the existing file does
+`blocked.certs` for newer releases. It also updates the blocklist inside
+`jmods/java.base.jmod` so runtimes produced by `jlink` inherit the same distrust.
+It fails the build if the existing file does
 not use SHA-256. Tests check preservation and idempotence, then exercise PKIX
 validation against all 48 encodings in `test/fixtures/cve-2026-91403.pem` and an
-unaffected ISRG Root X1 trust anchor. No network revocation service is required.
+unaffected ISRG Root X1 trust anchor. On Java 11+, the build repeats the PKIX test
+using a freshly generated `jlink` runtime. No network revocation service is required.
 
 The fixture contains public CA certificates, never private keys. It is used only
 for build-time validation and is removed from the final image along with the

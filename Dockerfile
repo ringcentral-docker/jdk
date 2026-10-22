@@ -44,6 +44,10 @@ COPY --from=builder /workspace/app/UpdateBlockedCertificates.class /workspace/ap
 RUN java -cp /tmp/java-security UpdateBlockedCertificatesTest /tmp/java-security/cve-2026-91403.properties \
     && java -cp /tmp/java-security UpdateBlockedCertificates /tmp/java-security/cve-2026-91403.properties \
     && java -cp /tmp/java-security CertificateBlocklistTest /tmp/java-security/cve-2026-91403.pem /tmp/java-security/cve-2026-91403.properties \
+    && if command -v jlink >/dev/null 2>&1; then \
+         jlink --add-modules java.base,jdk.crypto.ec --output /tmp/java-security/linked \
+         && /tmp/java-security/linked/bin/java -cp /tmp/java-security CertificateBlocklistTest /tmp/java-security/cve-2026-91403.pem /tmp/java-security/cve-2026-91403.properties; \
+       fi \
     && rm -rf /tmp/java-security
 
 # Cleanup installation scripts
