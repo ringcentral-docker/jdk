@@ -11,11 +11,11 @@ Multi-platform JDK Docker images based on Eclipse Temurin.
 
 | JDK Version | Version | Docker Hub Tags | GitHub Package Tags |
 |-------------|---------|-----------------|---------------------|
-| jdk8 | 8 | `ringcentral/jdk:8` `ringcentral/jdk:8u482` | `ghcr.io/ringcentral-docker/jdk:8` `ghcr.io/ringcentral-docker/jdk:8u482` |
-| jdk11 | 11 | `ringcentral/jdk:11` `ringcentral/jdk:11.0.30` | `ghcr.io/ringcentral-docker/jdk:11` `ghcr.io/ringcentral-docker/jdk:11.0.30` |
-| jdk17 | 17 | `ringcentral/jdk:17` `ringcentral/jdk:17.0.18` | `ghcr.io/ringcentral-docker/jdk:17` `ghcr.io/ringcentral-docker/jdk:17.0.18` |
-| jdk21 | 21 | `ringcentral/jdk:21` `ringcentral/jdk:21.0.10` | `ghcr.io/ringcentral-docker/jdk:21` `ghcr.io/ringcentral-docker/jdk:21.0.10` |
-| jdk25 | 25 | `ringcentral/jdk:25` `ringcentral/jdk:25.0.2` | `ghcr.io/ringcentral-docker/jdk:25` `ghcr.io/ringcentral-docker/jdk:25.0.2` |
+| jdk8 | 8 | `ringcentral/jdk:8` `ringcentral/jdk:8u504` | `ghcr.io/ringcentral-docker/jdk:8` `ghcr.io/ringcentral-docker/jdk:8u504` |
+| jdk11 | 11 | `ringcentral/jdk:11` `ringcentral/jdk:11.0.32.1` | `ghcr.io/ringcentral-docker/jdk:11` `ghcr.io/ringcentral-docker/jdk:11.0.32.1` |
+| jdk17 | 17 | `ringcentral/jdk:17` `ringcentral/jdk:17.0.20.1` | `ghcr.io/ringcentral-docker/jdk:17` `ghcr.io/ringcentral-docker/jdk:17.0.20.1` |
+| jdk21 | 21 | `ringcentral/jdk:21` `ringcentral/jdk:21.0.12.1` | `ghcr.io/ringcentral-docker/jdk:21` `ghcr.io/ringcentral-docker/jdk:21.0.12.1` |
+| jdk25 | 25 | `ringcentral/jdk:25` `ringcentral/jdk:25.0.4.1` | `ghcr.io/ringcentral-docker/jdk:25` `ghcr.io/ringcentral-docker/jdk:25.0.4.1` |
 
 ## Usage
 
@@ -35,9 +35,9 @@ docker run -it ringcentral/jdk:21 java -version
 ```bash
 # Build specific version (see versions/versions.json for available configurations)
 docker build \
-  --build-arg BASE_IMAGE_TAG=21.0.5_11-jdk-noble \
+  --build-arg BASE_IMAGE_TAG=21.0.12.1_1-jdk-noble \
   --build-arg JAVA_VERSION=21 \
-  --build-arg JAVA_DETAIL_VERSION=21.0.5 \
+  --build-arg JAVA_DETAIL_VERSION=21.0.12.1 \
   -t my-jdk:21 .
 ```
 

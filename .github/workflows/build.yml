@@ -11,6 +11,14 @@ on:
       - 'assets/**'
       - 'test/**'
       - '.github/workflows/build.yml'
+  pull_request:
+    paths:
+      - 'Dockerfile'
+      - 'versions/**'
+      - 'scripts/**'
+      - 'assets/**'
+      - 'test/**'
+      - '.github/workflows/build.yml'
   workflow_dispatch:
     inputs:
       version:
@@ -68,12 +76,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Login to GitHub Container Registry
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -122,18 +132,23 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: true
+          pull: true
+          push: ${{ github.ref == 'refs/heads/master' && github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
             BASE_IMAGE_TAG=${{ matrix.base_image_tag }}
             JAVA_VERSION=${{ matrix.java_version }}
             JAVA_DETAIL_VERSION=${{ matrix.detail_version }}
             VARIANT=${{ matrix.variant }}
+            JMODS_RELEASE_TAG=${{ matrix.jmods_release_tag }}
+            JMODS_ARCHIVE_VERSION=${{ matrix.jmods_archive_version }}
+            JMODS_SHA256_AMD64=${{ matrix.jmods_sha256_amd64 }}
+            JMODS_SHA256_ARM64=${{ matrix.jmods_sha256_arm64 }}
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
 
       - name: Run Trivy vulnerability scanner
-        if: steps.build.outcome == 'success'
+        if: steps.build.outcome == 'success' && github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.DOCKER_HUB_IMAGE }}:${{ steps.vars.outputs.version }}
@@ -143,7 +158,7 @@ jobs:
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
-        if: steps.build.outcome == 'success'
+        if: steps.build.outcome == 'success' && github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
         with:
           sarif_file: 'trivy-results.sarif'
 
@@ -152,6 +167,7 @@ jobs:
   # =============================================================================
   update-readme:
     needs: build
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -206,9 +222,9 @@ jobs:
           ```bash
           # Build specific version (see versions/versions.json for available configurations)
           docker build \
-            --build-arg BASE_IMAGE_TAG=21.0.5_11-jdk-noble \
+            --build-arg BASE_IMAGE_TAG=21.0.12.1_1-jdk-noble \
             --build-arg JAVA_VERSION=21 \
-            --build-arg JAVA_DETAIL_VERSION=21.0.5 \
+            --build-arg JAVA_DETAIL_VERSION=21.0.12.1 \
             -t my-jdk:21 .
           ```
 
